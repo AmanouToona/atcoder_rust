@@ -1,37 +1,35 @@
+use itertools::iproduct;
 use proconio::input;
 
-fn calc(a2: usize, b2: usize, c2: usize, a3: usize, b3: usize, c3: usize) -> (usize, usize, usize) {
-    let mut v1: usize = 0;
-    let mut v2: usize = 0;
-    let mut v3: usize = 0;
+fn calc(a2: isize, b2: isize, c2: isize, a3: isize, b3: isize, c3: isize) -> (usize, usize, usize) {
+    // 3 つの立方体に含まれる領域
+    let l_3 = |x1, x2| ((0.min(x1).min(x2) + 7) - 0.max(x1).max(x2)).max(0) as usize;
+    let v3 = l_3(a2, a3) * l_3(b2, b3) * l_3(c2, c3);
 
-    for a in (0..15).map(|x| x as usize) {
-        for b in (0..15).map(|x| x as usize) {
-            for c in (0..15).map(|x| x as usize) {
-                let mut v = 0;
+    // 2 つの立方体にのみ含まれる領域
+    let l_2 = |a: isize, b: isize| ((a.min(b) + 7) - a.max(b)).max(0) as usize;
+    let a = l_2(0, a2);
+    let b = l_2(0, b2);
+    let c = l_2(0, c2);
 
-                if (a <= 6) & (b <= 6) & (c <= 6) {
-                    v += 1
-                };
-                if (a2 <= a) & (a <= a2 + 6) & (b2 <= b) & (b <= b2 + 6) & (c2 <= c) & (c <= c2 + 6)
-                {
-                    v += 1
-                };
-                if (a3 <= a) & (a <= a3 + 6) & (b3 <= b) & (b <= b3 + 6) & (c3 <= c) & (c <= c3 + 6)
-                {
-                    v += 1
-                };
+    let mut v2: usize = (a * b * c) as usize;
 
-                if v == 1 {
-                    v1 += 1
-                } else if v == 2 {
-                    v2 += 1
-                } else if v == 3 {
-                    v3 += 1
-                }
-            }
-        }
-    }
+    let a = l_2(0, a3);
+    let b = l_2(0, b3);
+    let c = l_2(0, c3);
+
+    v2 += (a * b * c) as usize;
+
+    let a = l_2(a2, a3);
+    let b = l_2(b2, b3);
+    let c = l_2(c2, c3);
+
+    v2 += (a * b * c) as usize;
+
+    let v2 = v2 - v3 * 3;
+
+    let v1 = 7usize.pow(3) * 3 - v2 * 2 - v3 * 3;
+
     (v1, v2, v3)
 }
 
@@ -40,21 +38,15 @@ fn main() {
         (v1, v2, v3): (usize, usize, usize),
     }
 
-    for a2 in 0..=8 {
-        for b2 in 0..=8 {
-            for c2 in 0..=8 {
-                for a3 in 0..=8 {
-                    for b3 in 0..=8 {
-                        for c3 in 0..=8 {
-                            let (v1_, v2_, v3_) = calc(a2, b2, c2, a3, b3, c3);
-                            if (v1 == v1_) & (v2 == v2_) & (v3 == v3_) {
-                                println!("Yes");
-                                println!("0 0 0 {} {} {} {} {} {}", a2, b2, c2, a3, b3, c3);
-                                return;
-                            }
-                        }
-                    }
-                }
+    for (a2, b2, c2) in iproduct!(-7..=7, -7..=7, -7..=7) {
+        for (a3, b3, c3) in iproduct!(-7..=7, -7..=7, -7..=7) {
+            // let (v1_, v2_, v3_) = calculate_volumes(a2, b2, c2, a3, b3, c3);
+            let (v1_, v2_, v3_) = calc(a2, b2, c2, a3, b3, c3);
+
+            if (v1 == v1_) & (v2 == v2_) & (v3 == v3_) {
+                println!("Yes");
+                println!("0 0 0 {} {} {} {} {} {}", a2, b2, c2, a3, b3, c3);
+                return;
             }
         }
     }
