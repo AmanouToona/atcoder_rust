@@ -41,9 +41,6 @@ fn main() {
 
     let mut use_x: Vec<Option<bool>> = vec![None; n];
     for edge in edges.into_iter().rev() {
-        if edge.len() == 1 {
-            continue;
-        }
         // 実現可能か確認
         let mut already_used: HashSet<usize> = HashSet::new();
 
@@ -55,6 +52,22 @@ fn main() {
             }
             already_used.insert(e);
         }
+
+        // すでに保持している条件とぶつかるか？
+        let mut skip = false;
+        for &e in edge.iter() {
+            if (e >= n) && (use_x[e - n] == Some(true)) {
+                skip = true;
+            }
+            if (e < n) && (use_x[e] == Some(false)) {
+                skip = true;
+            }
+        }
+        if skip {
+            continue;
+        }
+
+        // 状態を変更する
 
         for &e in edge.iter() {
             if (e >= n) && (use_x[e - n].is_none()) {
