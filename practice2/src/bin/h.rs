@@ -1,5 +1,6 @@
 use ac_library::SccGraph;
 use proconio::input;
+use std::collections::HashSet;
 fn main() {
     input! {
         (n, d): (usize, isize),
@@ -37,43 +38,39 @@ fn main() {
     }
 
     let edges = graph.scc();
-    let edge = edges.iter().rev().next();
 
-    match edge {
-        Some(edge) => {
-            let mut use_x: Vec<Option<bool>> = vec![None; n];
+    let mut use_x: Vec<Option<bool>> = vec![None; n];
+    for edge in edges.into_iter().rev() {
+        if edge.len() == 1 {
+            continue;
+        }
+        // 実現可能か確認
+        let mut already_used: HashSet<usize> = HashSet::new();
 
-            for &e in edge.iter() {
-                if e >= n {
-                    let e = e - n;
-                    if use_x[e] == Some(true) {
-                        println!("No");
-                        return;
-                    }
-                    use_x[e] = Some(false);
-                } else {
-                    if use_x[e] == Some(false) {
-                        println!("No");
-                        return;
-                    }
-                    use_x[e] = Some(true);
-                }
+        for &e in edge.iter() {
+            let e: usize = if e >= n { e - n } else { e };
+            if already_used.contains(&e) {
+                println!("No");
+                return;
             }
+            already_used.insert(e);
+        }
 
-            println!("Yes");
-            for (i, is_x) in use_x.iter().enumerate() {
-                if *is_x == Some(true) {
-                    println!("{}", xy[i].0);
-                } else {
-                    println!("{}", xy[i].1);
-                }
+        for &e in edge.iter() {
+            if (e >= n) && (use_x[e - n].is_none()) {
+                use_x[e - n] = Some(false);
+            } else if (e < n) && (use_x[e].is_none()) {
+                use_x[e] = Some(true);
             }
         }
-        None => {
-            println!("Yes");
-            for (x, _) in xy.iter() {
-                println!("{}", x);
-            }
+    }
+
+    println!("Yes");
+    for (i, is_x) in use_x.iter().enumerate() {
+        if *is_x == Some(true) {
+            println!("{}", xy[i].0);
+        } else {
+            println!("{}", xy[i].1);
         }
     }
 }
