@@ -3,19 +3,15 @@ fn main() {
     input! {
         t: String,
         n : usize,
-        a_s: [String; n],
     }
 
     let mut a = Vec::new();
-
-    for _a in a_s.into_iter() {
-        let _a: Vec<String> = _a
-            .split(' ')
-            .enumerate()
-            .filter(|(i, _)| i != &0)
-            .map(|(_, s)| s.to_string())
-            .collect();
-        a.push(_a);
+    for _ in 0..n {
+        input! {
+            ss: usize,
+            s: [String; ss],
+        }
+        a.push(s);
     }
 
     let t: Vec<char> = t.chars().collect();
