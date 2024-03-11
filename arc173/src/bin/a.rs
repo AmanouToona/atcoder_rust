@@ -8,34 +8,37 @@ fn count_eq(case: i64) -> i64 {
     let mut dp = vec![vec![vec![vec![vec![0i64; 2]; 10]; 2]; 2]; dig as usize + 1];
     dp[0][0][0][0][0] = 1;
 
-    let d_nums = nums(case);
+    let digit_values = nums(case);
 
-    for d in 0..dig {
-        for smaller in 0..2 {
-            for non_zero in 0..2 {
-                for pre in 0..10 {
-                    for ok in 0..2 {
-                        for n in 0..(if smaller == 1 {
+    for d in 0usize..(dig as usize) {
+        for smaller in 0usize..2 {
+            for non_zero in 0usize..2 {
+                for pre in 0usize..10 {
+                    for ok in 0usize..2 {
+                        let limit: usize = if smaller == 1 {
                             10
                         } else {
-                            d_nums[d as usize] + 1
-                        }) {
-                            let mut is_ok = ok;
-                            if pre == n {
-                                if non_zero == 1 {
-                                    is_ok = 1
-                                } else if n != 0 {
-                                    is_ok = 1;
-                                }
-                            }
-
-                            dp[d as usize + 1][if (smaller == 1) | (n < d_nums[d as usize]) {
+                            digit_values[d] as usize + 1
+                        };
+                        for n in 0..limit {
+                            let is_ok = if pre != n {
+                                ok
+                            } else if n != 0 || non_zero == 1 {
                                 1
                             } else {
                                 0
-                            }][if (non_zero == 1) | (n != 0) { 1 } else { 0 }]
-                                [n as usize][is_ok] +=
-                                dp[d as usize][smaller][non_zero][pre as usize][ok];
+                            };
+
+                            let new_smaller = if smaller == 1 || n < digit_values[d] as usize {
+                                1
+                            } else {
+                                0
+                            };
+
+                            let new_nonzero = if n != 0 { 1 } else { non_zero };
+
+                            dp[d + 1][new_smaller][new_nonzero][n][is_ok] +=
+                                dp[d][smaller][non_zero][pre][ok];
                         }
                     }
                 }
@@ -46,7 +49,7 @@ fn count_eq(case: i64) -> i64 {
     let mut res = 0;
     for i in 0..10 {
         res += dp[dig as usize][1][1][i][1];
-        res += dp[dig as usize][1][0][i][1];
+        res += dp[dig as usize][0][1][i][1];
     }
 
     res
