@@ -1,60 +1,49 @@
 use proconio::input;
+use proconio::marker::Chars;
+const INFINITY: usize = usize::MAX; // usize::MAXを無限大の値として使用
+#[allow(non_snake_case)]
+
 fn main() {
     input! {
-        t: String,
-        n : usize,
+        T: Chars,
+        n: usize,
     }
 
-    let mut a = Vec::new();
+    let mut A = Vec::with_capacity(n);
     for _ in 0..n {
         input! {
-            ss: usize,
-            s: [String; ss],
+            a: usize,
+            s: [String; a],
         }
-        a.push(s);
+        A.push(s);
     }
 
-    let t: Vec<char> = t.chars().collect();
+    let mut dp = vec![INFINITY; T.len() + 1];
+    dp[0] = 0;
 
-    fn dfs(cost: usize, i: usize, s: usize, a: &Vec<Vec<String>>, t: &Vec<char>) -> usize {
-        let mut in_cost = 10usize.pow(10);
-
-        if i == a.len() {
-            if s == t.len() {
-                return cost;
-            }
-            return in_cost;
-        }
-
-        in_cost = in_cost.min(dfs(cost, i + 1, s, a, t));
-
-        for a_ in &a[i] {
-            if s + a_.len() > t.len() {
+    for a in A.iter() {
+        let mut v_dp = dp.clone();
+        for (i, &cost) in dp.iter().enumerate() {
+            if cost == INFINITY {
                 continue;
             }
 
-            let mut can = true;
+            for s in a.iter() {
+                if i + s.len() > T.len() {
+                    continue;
+                }
 
-            for (a__, &t_) in a_.chars().zip(t[s..s + a_.len()].iter()) {
-                if a__ != t_ {
-                    can = false;
-                    break;
+                if s.chars().zip(&T[i..i + s.len()]).all(|(s, t)| s == *t) {
+                    v_dp[i + s.len()] = v_dp[i + s.len()].min(v_dp[i] + 1);
                 }
             }
-
-            if can {
-                in_cost = in_cost.min(dfs(cost + 1, i + 1, s + a_.len(), a, t));
-            }
         }
+        dp = v_dp;
+    }
 
-        return in_cost;
-    };
-
-    let ans = dfs(0, 0, 0, &a, &t);
-
-    if ans < 10000000000 {
-        println!("{}", ans);
+    if *dp.last().unwrap() != INFINITY {
+        println!("{}", dp.last().unwrap());
     } else {
-        println!("-1")
+        println!("-1");
     }
 }
