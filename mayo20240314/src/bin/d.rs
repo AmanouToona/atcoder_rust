@@ -22,10 +22,15 @@ fn main() {
         }
         val.sort();
 
-        for i in 0..val.len() - 1 {
-            let left = i + 1;
-            let right = val.len() - (i + 1);
-            ans += (val[i + 1] - val[i] - 1) * left * right;
+        let mut sum_i = 0;
+        for (i, v) in val[1..].iter().enumerate() {
+            sum_i += val[i];
+            ans += (v - 1) * (i + 1) - sum_i;
+        }
+
+        if val.len() >= 3 {
+            let n = val.len();
+            ans -= (n * (n - 1) * (n - 2)) / 6;
         }
     }
 
