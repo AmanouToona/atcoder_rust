@@ -1,5 +1,3 @@
-use nalgebra::abs;
-use num::abs_sub;
 // https://atcoder.jp/contests/abc119/tasks/abc119_c
 use proconio::input;
 #[allow(non_snake_case)]
