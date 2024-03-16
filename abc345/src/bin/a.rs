@@ -1,5 +1,7 @@
 use proconio::input;
 use proconio::marker::Chars;
+#[allow(non_snake_case)]
+
 fn main() {
     input! {
         S: Chars,
@@ -14,8 +16,8 @@ fn main() {
         return;
     }
 
-    for i in 1..(S.len() - 1) {
-        if S[i] != '=' {
+    for &s in S.iter().take(S.len() - 1).skip(1) {
+        if s != '=' {
             println!("No");
             return;
         }

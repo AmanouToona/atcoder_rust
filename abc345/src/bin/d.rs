@@ -1,4 +1,5 @@
 use proconio::input;
+#[allow(non_snake_case)]
 
 struct Solve {
     H: usize,
@@ -9,6 +10,7 @@ struct Solve {
     filled: Vec<Vec<bool>>,
     ans: bool,
 }
+#[allow(non_snake_case)]
 
 impl Solve {
     // Add a constructor method for `Solve`
@@ -50,6 +52,7 @@ impl Solve {
                 }
             }
         }
+
         // 埋め終わった
         if r == self.H && c == self.W {
             self.ans = true;
@@ -64,7 +67,7 @@ impl Solve {
             let mut dr = self.AB[i].0;
             let mut dc = self.AB[i].1;
 
-            for j in 0..2 {
+            'outer: for j in 0..2 {
                 if j == 1 {
                     std::mem::swap(&mut dr, &mut dc);
                 }
@@ -74,18 +77,12 @@ impl Solve {
                 }
 
                 // タイルが他のタイルと重なっていないか確認
-                let mut can = true;
                 for _r in r..r + dr {
                     for _c in c..c + dc {
                         if self.filled[_r][_c] {
-                            can = false;
-                            break;
+                            break 'outer;
                         }
                     }
-                }
-
-                if !can {
-                    continue;
                 }
 
                 for _r in r..r + dr {
@@ -105,6 +102,8 @@ impl Solve {
         }
     }
 }
+#[allow(non_snake_case)]
+
 fn main() {
     input! {
         (N, H, W): (usize, usize, usize),
