@@ -2,8 +2,8 @@ use ac_library::floor_sum;
 use proconio::input;
 fn main() {
     input! {
-        T: usize,
-        nmab: [(i64, i64, i64, i64, ); T],
+        t: usize,
+        nmab: [(i64, i64, i64, i64, ); t],
     }
 
     for (n, m, a, b) in nmab.into_iter() {
