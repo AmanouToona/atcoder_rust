@@ -1,7 +1,7 @@
 use ac_library::lcp_array;
 use ac_library::suffix_array;
 use proconio::input;
-
+#[allow(non_snake_case)]
 fn main() {
     input! {
         S: String,

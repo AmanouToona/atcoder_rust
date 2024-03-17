@@ -1,4 +1,3 @@
-use alga::general::Ring;
 // https://atcoder.jp/contests/abc318/tasks/abc318_e
 use proconio::input;
 use std::collections::HashMap;

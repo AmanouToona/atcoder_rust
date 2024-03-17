@@ -96,6 +96,7 @@ fn solve(case: i64) -> i64 {
     }
     ok
 }
+#[allow(non_snake_case)]
 
 fn main() {
     input! {

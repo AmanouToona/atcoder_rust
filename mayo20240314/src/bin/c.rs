@@ -6,7 +6,7 @@ use proconio::marker::Chars;
 
 fn main() {
     input! {
-        (H, W, N): (usize, usize, usize),
+        (H, W, _): (usize, usize, usize),
         T: Chars,
         S: [Chars; H],
     }
