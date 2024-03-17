@@ -1,6 +1,8 @@
 use im_rc::HashMap;
 use proconio::input;
 use proconio::marker::Chars;
+#[allow(non_snake_case)]
+
 fn main() {
     input! {
         S: Chars,
@@ -15,20 +17,19 @@ fn main() {
     let n = S.len();
     let mut ans = n * (n - 1) / 2;
 
-    let mut to_sub = 0;
+    let mut is_dup: bool = false;
     for &v in dup.values() {
         if v <= 1 {
             continue;
         }
 
-        ans -= v * (v - 1) / 2 - 1;
-        if to_sub == 0 {
-            to_sub = 1;
-        }
-        to_sub *= v;
+        ans -= v * (v - 1) / 2;
+        is_dup = true;
     }
 
-    ans -= to_sub;
+    if is_dup {
+        ans += 1;
+    }
 
     println!("{}", ans);
 }
