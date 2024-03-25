@@ -1,6 +1,6 @@
-use im_rc::{HashMap, HashSet};
 use itertools::Itertools;
 use proconio::input;
+use std::collections::{HashMap, HashSet};
 #[allow(non_snake_case)]
 fn main() {
     input! {
@@ -8,15 +8,8 @@ fn main() {
         TAX: [(usize, usize, usize); M],
     }
 
-    let mut hs = HashSet::new();
-    for h in 0..H {
-        hs.insert(h);
-    }
-
-    let mut ws = HashSet::new();
-    for w in 0..W {
-        ws.insert(w);
-    }
+    let mut hs: HashSet<usize> = (0..H).collect();
+    let mut ws: HashSet<usize> = (0..W).collect();
 
     let mut ans = HashMap::new();
 

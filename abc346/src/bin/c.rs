@@ -1,22 +1,14 @@
-use im_rc::HashSet;
 use proconio::input;
+use std::collections::HashSet;
 #[allow(non_snake_case)]
 fn main() {
     input! {N: usize, K: usize, A: [usize; N]};
 
-    let mut a_set = HashSet::new();
-    for &a in A.iter() {
-        if a > K {
-            continue;
-        }
-        a_set.insert(a);
-    }
+    let a_set: HashSet<usize> = A.iter().filter(|x| **x <= K).copied().collect();
+    let unique_sum: usize = a_set.iter().sum();
 
-    let A: Vec<usize> = a_set.into_iter().collect();
-
-    let mut ans = (1 + K) * K / 2;
-
-    ans -= A.iter().sum::<usize>();
+    let total_sum = (1 + K) * K / 2;
+    let ans = total_sum - unique_sum;
 
     println!("{}", ans);
 }

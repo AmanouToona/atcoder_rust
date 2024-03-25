@@ -3,19 +3,18 @@ use proconio::input;
 fn main() {
     input! {W: usize, B:usize};
 
-    let key = "wbwbwwbwbwbw".to_string().repeat(100);
-    let key: Vec<char> = key.chars().collect();
+    let key = "wbwbwwbwbwbw";
 
-    for i in 0..12 {
+    'outer: for i in 0..12 {
         let mut w = 0;
         let mut b = 0;
 
-        for &s in key.iter().skip(i) {
-            if s == 'w' {
-                w += 1;
-            } else {
-                b += 1;
-            }
+        for s in key.chars().cycle().skip(i) {
+            match s {
+                'w' => w += 1,
+                'b' => b += 1,
+                _ => {}
+            };
 
             if w == W && b == B {
                 println!("Yes");
@@ -23,9 +22,10 @@ fn main() {
             }
 
             if w > W || b > B {
-                break;
+                continue 'outer;
             }
         }
     }
+
     println!("No");
 }

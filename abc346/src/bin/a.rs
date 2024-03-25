@@ -9,8 +9,8 @@ fn main() {
 
     let mut B = Vec::new();
 
-    for (&a1, &a2) in A.iter().zip(A.iter().skip(1)) {
-        B.push(a1 * a2);
+    for (&a1, &a2) in A.iter().tuple_windows::<(_, _)>() {
+        B.push(a1 * a2)
     }
 
     let ans = B.iter().map(|x| x.to_string()).join(" ");
