@@ -9,7 +9,7 @@ fn main() {
     let mut ss: Vec<Vec<char>> = Vec::new();
 
     for s_ in s.into_iter() {
-        ss.push(s_.chars().into_iter().collect());
+        ss.push(s_.chars().collect());
     }
 
     let ss = ss;
