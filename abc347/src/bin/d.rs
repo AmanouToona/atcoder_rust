@@ -5,18 +5,7 @@ fn main() {
         (a, b, C): (i128, i128, i128),
     }
 
-    let min_ones = (a - b).abs();
-    let max_ones = if (a + b) <= 60 {
-        a + b
-    } else {
-        60 - (a + b) % 60
-    };
-
     let c = C.count_ones() as i128;
-    if c < min_ones || c > max_ones || (max_ones - c) % 2 != 0 {
-        println!("-1");
-        return;
-    }
 
     // C 0 のところで、 A, B が 1になる個数
     let dup = (a + b - c) / 2;
@@ -41,7 +30,12 @@ fn main() {
 
     let B = C ^ A;
 
-    if A >= 2i128.pow(60) || B >= 2i128.pow(60) {
+    if A >= 2i128.pow(60)
+        || B >= 2i128.pow(60)
+        || A.count_ones() as i128 != a
+        || B.count_ones() as i128 != b
+        || A ^ B != C
+    {
         println!("-1");
         return;
     }
