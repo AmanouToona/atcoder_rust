@@ -24,9 +24,12 @@ fn main() {
 
     // identity_map: lazy data の初期値
     // mapping: lazy -> 下のdata の伝搬
-    // composition: lazy -> 下の lazy に流す
+    // composition: 遅延操作を次の遅延操作に適用する composition(上から来た作用, いま保持している遅延作用)
 
-    // set: 末端の値を蹴って
+    // 更新のイメージ
+    // 上から来た操作 f を現在の d[k] に適応した後に lz[k] に作用させる。 lz[k] は将来 d[2k], d[2k + 1] の更新に用いられ、 d[k] の更新には無関係
+
+    // set: 末端の値を決定
     // push lazy を下の data に伝搬させる
     // push の中では、 app_apply が呼ばれており、 中でmapping, composition
 
