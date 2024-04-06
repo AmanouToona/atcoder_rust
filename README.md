@@ -18,6 +18,14 @@
 
 - binaryHeap: 降順で pop
 
+## HashMap
+
+- contain_key(): 存在確認
+
+### entry
+
+- and_modify 操作 and_modify(|e: &mut usize| *e = (*e).min(a)) とか
+
 ### for
 
 - iproduct!: 多重ループで使用
