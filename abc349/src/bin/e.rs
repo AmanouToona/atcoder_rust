@@ -10,6 +10,7 @@ struct Game {
     taka: bool,
 }
 
+#[allow(non_snake_case)]
 impl Game {
     fn new(A: Vec<Vec<isize>>) -> Self {
         Game {

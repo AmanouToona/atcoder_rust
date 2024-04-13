@@ -1,6 +1,3 @@
-use std::fmt::format;
-
-use num_traits::Pow;
 use proconio::input;
 #[allow(non_snake_case)]
 fn main() {
