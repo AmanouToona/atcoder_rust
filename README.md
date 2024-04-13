@@ -18,6 +18,15 @@
 
 - binaryHeap: 降順で pop
 
+### HashSet
+
+- 挿入は `insert`
+- 要素があるかの確認は `is_empty()`
+
+### HashMap
+
+- 各種 itor: key: `keys()`, value: `valus()`, item: `iter()`
+
 ### for
 
 - iproduct!: 多重ループで使用
