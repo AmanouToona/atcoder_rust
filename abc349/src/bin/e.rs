@@ -1,7 +1,6 @@
-use std::collections::HashMap;
-
 use itertools::iproduct;
 use proconio::input;
+use std::collections::HashMap;
 
 #[allow(non_snake_case)]
 struct Game {
@@ -56,13 +55,13 @@ impl Game {
                 if self.C[c][r] != self.C[c + 1][r] {
                     continue 'out;
                 }
-                if r == 1 {
+                if c == 1 {
                     return self.C[c + 1][r];
                 }
             }
         }
 
-        // 全梅
+        // 全埋め
         for (c, r) in iproduct!(0..3, 0..3) {
             if self.C[c][r] == 0 {
                 return 0;
@@ -74,9 +73,9 @@ impl Game {
 
         for (c, r) in iproduct!(0..3, 0..3) {
             if self.C[c][r] == 1 {
-                one += self.C[c][r];
+                one += self.A[c][r];
             } else {
-                two += self.C[c][r];
+                two += self.A[c][r];
             }
         }
 
@@ -84,7 +83,7 @@ impl Game {
             return 1;
         }
 
-        return 2;
+        2
     }
 
     // taka が勝つとき true
@@ -93,48 +92,38 @@ impl Game {
             return t;
         }
 
-        if self.is_end() == 1 {
-            self.cache.entry(self.C.clone()).or_insert(true);
-            return true;
-        } else if self.is_end() == 2 {
-            self.cache.entry(self.C.clone()).or_insert(false);
-            return false;
+        let end = self.is_end();
+        if end != 0 {
+            self.cache.entry(self.C.clone()).or_insert(end == 1);
+            return end == 1;
         }
 
         for (c, r) in iproduct!(0..3, 0..3) {
+            // すでに塗られている
             if self.C[c][r] != 0 {
                 continue;
             }
+
+            // 染色
             if self.taka {
                 self.C[c][r] = 1;
-                self.taka = false;
-                let mut end = false;
-                if self.dfs() {
-                    self.cache.entry(self.C.clone()).or_insert(true);
-                    end = true;
-                }
-                self.C[c][r] = 0;
-                self.taka = true;
-                if end {
-                    return true;
-                }
-                continue;
+            } else {
+                self.C[c][r] = 2;
             }
-            self.C[c][r] = 2;
-            self.taka = true;
-            let mut end = false;
-            if !self.dfs() {
-                self.cache.entry(self.C.clone()).or_insert(false);
-                end = true;
-            }
+            self.taka = !self.taka;
+
+            let t = self.dfs();
+
             self.C[c][r] = 0;
-            self.taka = false;
-            if end {
-                return false;
+            self.taka = !self.taka;
+
+            if self.taka == t {
+                self.cache.insert(self.C.clone(), t);
+                return t;
             }
         }
 
-        true
+        !self.taka
     }
 }
 
