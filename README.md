@@ -26,6 +26,11 @@
 ### HashMap
 
 - 各種 itor: key: `keys()`, value: `valus()`, item: `iter()`
+- contain_key(): 存在確認
+
+### entry
+
+- and_modify 操作 and_modify(|e: &mut usize| *e = (*e).min(a)) とか
 
 ### for
 
