@@ -6,12 +6,10 @@ fn main() {
         S: Chars,
         T: Chars,
     }
-    let s_string: String = S.into_iter().collect();
-
-    // Convert the string to uppercase
-    let uppercase_s = s_string.to_uppercase();
-
-    let S: Vec<char> = uppercase_s.chars().collect();
+    let S: Vec<char> = S
+        .into_iter()
+        .map(|c| c.to_uppercase().next().unwrap())
+        .collect();
 
     let mut num = 0;
 
