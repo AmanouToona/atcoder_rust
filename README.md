@@ -62,3 +62,19 @@ v.sort_by_key(|&x| Total(x));
 let heap: BinaryHeap<Total<f64>> = BinaryHeap::new();
 
 ```
+
+## 文字列
+
+Vec<char> を大文字に変換する
+
+```rust
+let S: Vec<char> = S
+    .into_iter()
+    .map(|c| c.to_uppercase().next().unwrap())
+    .collect();
+```
+
+## pow
+
+pow の利用時は型が明確であることが必要
+`2.pow(2)` ではなく `2i32.pow(2)` など
