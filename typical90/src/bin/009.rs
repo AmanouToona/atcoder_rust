@@ -26,28 +26,22 @@ fn main() {
 
             if y < 0. {
                 theta *= -1.;
+                theta += 2. * PI;
             }
 
             thetas.push(theta);
+            thetas.push(theta + 2. * PI);
         }
 
         thetas.dedup();
         thetas.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
         for &a in thetas.iter() {
-            let target = (a + PI) % (2. * PI);
-
-            // target に最も近い角度を thetas の中から 2分探索で検索する
-            if target <= thetas[0] || target >= *thetas.last().unwrap() {
-                let mut candidate = (a - thetas[0])
-                    .abs()
-                    .max((a - *thetas.last().unwrap()).abs());
-                if candidate > PI {
-                    candidate = 2. * PI - candidate
-                }
-                ans = ans.max(candidate);
-                continue;
+            if a > 2. * PI {
+                break;
             }
+
+            let target = a + PI;
 
             let mut left = 0;
             let mut right = N;
@@ -62,7 +56,12 @@ fn main() {
                 }
             }
 
-            let mut candidate = (a - thetas[left]).abs().max((a - thetas[right]).abs());
+            let mut candidate = if (target - thetas[left]).abs() < (target - thetas[right]).abs() {
+                (a - thetas[left]).abs()
+            } else {
+                (a - thetas[right]).abs()
+            };
+
             if candidate > PI {
                 candidate = 2. * PI - candidate
             }

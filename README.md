@@ -2,6 +2,10 @@
 
 ## 言語機能関連メモ
 
+## Vec
+
+- 重複削除 `v.dedup()` 破壊的
+
 ### 四則演算
 
 - saturating_sub: usize の引き算の時に最小値を 0 に固定
@@ -46,5 +50,14 @@ v.sort_by_key(|&x| Total(x));
 
 // f64のBinaryHeapもできる！
 let heap: BinaryHeap<Total<f64>> = BinaryHeap::new();
-
 ```
+
+```rust
+fn main() {
+    let mut v: Vec<f64> = vec![10.2, 4.6, 0.01, 6.2, 12.0];
+    v.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    println!("{:?}", v);
+}
+```
+
+partial_cmp でもソート可能
