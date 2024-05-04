@@ -62,6 +62,14 @@ fn main() {
 
 partial_cmp でもソート可能
 
+### 三角関数
+
+atan(v/h) は v.atan2(h) とすると、h=0 の場合でも動作する。
+
+## 定数
+
+pi `use std::f64::const::PI;`
+
 ## AC_library
 
 ### union find
