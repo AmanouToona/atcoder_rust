@@ -48,3 +48,17 @@ v.sort_by_key(|&x| Total(x));
 let heap: BinaryHeap<Total<f64>> = BinaryHeap::new();
 
 ```
+
+## 文字操作
+
+### char -> num
+
+```
+s as usize
+```
+
+### num -> char
+
+```
+std::char::from_digit(s as u32, 10).unwrap()
+```
