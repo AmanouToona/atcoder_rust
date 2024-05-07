@@ -75,3 +75,17 @@ pi `use std::f64::const::PI;`
 ### union find
 
 Dsu (disjoint set union)
+
+## 文字操作
+
+### char -> num
+
+```
+s as usize
+```
+
+### num -> char
+
+```
+std::char::from_digit(s as u32, 10).unwrap()
+```
