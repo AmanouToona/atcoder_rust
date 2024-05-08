@@ -32,7 +32,7 @@ fn main() {
     }
 
     for k in 1..=N {
-        let a = ans.entry(k.try_into().unwrap()).or_insert(0);
+        let a = ans.entry(k as i64).or_insert(0);
         println!("{}", a);
     }
 }
