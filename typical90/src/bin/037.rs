@@ -38,9 +38,8 @@ fn main() {
     }
 
     let mut dp = vec![0; W + 1];
+    let mut seg = LazySegtree::<F>::new(W + 1);
     for &(l, r, v) in LRV.iter() {
-        let mut seg = LazySegtree::<F>::new(W + 1);
-
         for (i, &u_val) in dp.iter().enumerate() {
             if i != 0 && u_val == 0 {
                 continue;
