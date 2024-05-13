@@ -29,11 +29,7 @@ fn main() {
             }
         }
 
-        let mut cost = 0;
-        for (j, a) in i.iter().enumerate() {
-            cost += A[*a][j];
-        }
-
+        let cost = i.iter().enumerate().map(|(j, &a)| A[a][j]).sum();
         ans = ans.min(cost);
     }
 
