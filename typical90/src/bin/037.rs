@@ -41,8 +41,8 @@ fn main() {
     for &(l, r, v) in LRV.iter() {
         let mut seg = LazySegtree::<F>::new(W + 1);
 
-        for i in 0..=W {
-            if i != 0 && dp[i] == 0 {
+        for (i, &u_val) in dp.iter().enumerate() {
+            if i != 0 && u_val == 0 {
                 continue;
             }
             let left = i + l;
@@ -52,11 +52,11 @@ fn main() {
                 break;
             }
 
-            seg.apply_range(left..=right, dp[i] + v)
+            seg.apply_range(left..=right, u_val + v)
         }
 
-        for i in 0..=W {
-            dp[i] = dp[i].max(seg.get(i));
+        for (i, d) in dp.iter_mut().enumerate() {
+            *d = *d.max(&mut seg.get(i));
         }
     }
 
