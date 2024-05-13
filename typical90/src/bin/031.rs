@@ -8,13 +8,11 @@ struct Solve {
 
 impl Solve {
     fn new() -> Self {
-        let mut groundy = vec![vec![None; 1300]; 1300];
+        let mut groundy = vec![vec![None; 1400]; 1400];
         groundy[0][1] = Some(0usize);
         groundy[0][0] = Some(0usize);
 
-        Solve {
-            groundy: vec![vec![None; 1300]; 1300],
-        }
+        Solve { groundy }
     }
 
     fn get(&mut self, w: usize, b: usize) -> usize {
