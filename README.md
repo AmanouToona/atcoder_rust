@@ -91,3 +91,11 @@ fn main() {
 ```
 
 partial_cmp でもソート可能
+
+## MOD
+
+`rem_euclid` を使う
+
+```rust
+ans = ans.rem_euclid(100);
+```
