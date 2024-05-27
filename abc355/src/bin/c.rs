@@ -1,59 +1,5 @@
 use proconio::input;
 
-fn is_bingo(b: &Vec<Vec<bool>>, p: (usize, usize)) -> bool {
-    let n = b.len();
-
-    // 左斜め
-    let mut bingo = true;
-    for i in 0..n {
-        if !b[i][i] {
-            bingo = false;
-            break;
-        }
-    }
-
-    if bingo {
-        return true;
-    }
-
-    // 右斜め
-    let mut bingo = true;
-    for i in 0..n {
-        if !b[n - 1 - i][i] {
-            bingo = false;
-        }
-    }
-
-    if bingo {
-        return true;
-    }
-
-    // p 横
-    let mut bingo = true;
-    for i in 0..n {
-        if !b[p.0][i] {
-            bingo = false
-        }
-    }
-
-    if bingo {
-        return true;
-    }
-
-    // p 縦
-    let mut bingo = true;
-    for i in 0..n {
-        if !b[i][p.1] {
-            bingo = false;
-        }
-    }
-    if bingo {
-        return true;
-    }
-
-    false
-}
-
 #[allow(non_snake_case)]
 fn main() {
     input! {
@@ -61,22 +7,49 @@ fn main() {
         A: [usize; T],
     }
 
-    let mut b = vec![vec![false; N]; N];
+    let mut b = vec![vec![usize::MAX; N]; N];
 
     for (i, &a) in A.iter().enumerate() {
         let a = a - 1;
+
         let r = a / N;
         let c = a - r * N;
 
-        // println!("{} {} ", r, c);
-
-        b[r][c] = true;
-
-        if is_bingo(&b, (r, c)) {
-            println!("{}", i + 1);
-            return;
-        }
+        b[r][c] = i + 1;
     }
 
-    println!("-1");
+    let mut ans = usize::MAX;
+    // 行方向のビンゴ
+    for b_ in b.iter() {
+        ans = ans.min(*b_.iter().max().unwrap());
+    }
+
+    // 列方向のビンゴ
+    for i in 0..N {
+        let mut a_ = 0;
+        for b_ in b.iter() {
+            a_ = a_.max(b_[i]);
+        }
+        ans = ans.min(a_);
+    }
+
+    // 左斜め
+    let mut a_ = 0;
+    for (i, b_) in b.iter().enumerate() {
+        a_ = a_.max(b_[i]);
+    }
+    ans = ans.min(a_);
+
+    // 右斜め
+    let mut a_ = 0;
+    for i in 0..N {
+        a_ = a_.max(b[N - i - 1][i]);
+    }
+    ans = ans.min(a_);
+
+    if ans != usize::MAX {
+        println!("{}", ans);
+    } else {
+        println!("-1");
+    }
 }
