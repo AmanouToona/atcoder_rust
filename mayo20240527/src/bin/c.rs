@@ -9,32 +9,41 @@ fn main() {
         T: Chars,
     }
 
-    let mut no = 0;
-    for (i, &t) in T.iter().rev().enumerate() {
-        let s = S[S.len() - 1 - i];
-
-        if t != s && t != '?' && s != '?' {
-            no += 1
+    let mut pre = vec![true];
+    for (s, t) in S.iter().zip(T.iter()) {
+        if s == t || *s == '?' || *t == '?' {
+            pre.push(true);
+        } else {
+            pre.push(false);
         }
     }
 
-    let mut ans = Vec::new();
-    ans.push(if no == 0 { "Yes" } else { "No" });
-
-    for (i, &t) in T.iter().enumerate() {
-        let s = S[S.len() - (T.len() - i)];
-
-        if s != t && s != '?' && t != '?' {
-            no += 1;
+    for i in 0..(pre.len() - 1) {
+        if !pre[i] {
+            pre[i + 1] = false;
         }
-
-        if S[i] != '?' && t != '?' && S[i] != t {
-            no += 1;
-        }
-        ans.push(if no == 0 { "Yes" } else { "No" });
     }
 
-    for a in ans.iter() {
-        println!("{}", a);
+    let mut suf = vec![true];
+    for (s, t) in S.iter().rev().zip(T.iter().rev()) {
+        if s == t || *s == '?' || *t == '?' {
+            suf.push(true);
+        } else {
+            suf.push(false);
+        }
+    }
+
+    for i in 0..(suf.len() - 1) {
+        if !suf[i] {
+            suf[i + 1] = false;
+        }
+    }
+
+    for (i, j) in pre.iter().zip(suf.iter().take(T.len() + 1).rev()) {
+        if i & j {
+            println!("Yes");
+        } else {
+            println!("No");
+        }
     }
 }

@@ -1,103 +1,98 @@
+use itertools::Itertools;
 use proconio::input;
 use proconio::marker::Chars;
 // ABC326 D
 
-fn is_ok(board: &Vec<Vec<char>>, R: &Vec<char>, C: &Vec<char>) -> bool {
-    let mut br = Vec::new();
-    for c in board.iter() {
-        for m in c.iter() {
-            if *m != '.' {
-                br.push(*m);
-            }
-        }
-    }
-
-    if br != *R {
-        return false;
-    }
-
-    let mut bc = Vec::new();
-    'outer: for c in 0..board.len() {
-        for r in 0..board.len() {
-            if board[r][c] != '.' {
-                bc.push(board[r][c]);
-                continue 'outer;
-            }
-        }
-    }
-
-    if bc != *C {
-        return false;
-    }
-
-    true
-}
-
+#[allow(non_snake_case)]
 struct Solve {
     board: Vec<Vec<char>>,
     R: Vec<char>,
     C: Vec<char>,
-    N: usize,
-    has: String,
+    n: usize,
 }
 
+#[allow(non_snake_case)]
 impl Solve {
-    fn new(R: Vec<char>, C: Vec<char>, N: usize) -> Self {
-        let board = vec![vec!['A'; N]; N];
-        let has = "No".to_string();
-
-        Solve {
-            board,
-            R,
-            C,
-            N,
-            has,
-        }
+    fn new(R: Vec<char>, C: Vec<char>) -> Self {
+        let n = R.len();
+        let board = vec![vec!['.'; n]; n];
+        Solve { board, R, C, n }
     }
 
-    fn dfs(&mut self, n: usize) {
-        if n >= self.N {
-            if is_ok(&self.board, &self.R, &self.C) {
-                self.has = "Yes".to_string();
+    fn dfs(&mut self, alp: char) -> bool {
+        if alp == 'D' {
+            let mut check_R = vec!['.'; self.n];
+            'outer: for (i, row) in self.board.iter().enumerate() {
+                for &r in row.iter() {
+                    if r == '.' {
+                        continue;
+                    }
+                    check_R[i] = r;
+                    continue 'outer;
+                }
             }
-            return;
+
+            let mut check_C = vec!['.'; self.n];
+            'outer: for j in 0..self.n {
+                for row in self.board.iter() {
+                    if row[j] == '.' {
+                        continue;
+                    }
+                    check_C[j] = row[j];
+                    continue 'outer;
+                }
+            }
+
+            if self.R == check_R && self.C == check_C {
+                return true;
+            }
         }
 
-        if self.has == "Yes".to_string() {
-            return;
+        for position in (0..self.n).permutations(self.n) {
+            let mut ok = true;
+            for (i, row) in self.board.iter_mut().enumerate() {
+                if row[position[i]] != '.' {
+                    ok = false;
+                    break;
+                }
+                row[position[i]] = alp;
+            }
+
+            if ok && self.dfs(char::from_u32(alp as u32 + 1).unwrap()) {
+                return true;
+            }
+
+            for (i, row) in self.board.iter_mut().enumerate() {
+                if row[position[i]] == alp {
+                    row[position[i]] = '.';
+                }
+            }
         }
 
-        let r = n / self.N;
-        let c = n % self.N;
-
-        for ch in ['A', 'B', 'C', '.'] {
-            self.board[r][c] = ch;
-            self.dfs(n + 1);
-        }
+        false
     }
 }
 
 #[allow(non_snake_case)]
 fn main() {
     input! {
-        N: usize,
+        _: usize,
         R: Chars,
-        C: Chars,
+        C: Chars
     }
 
-    let R: Vec<char> = R.into_iter().collect();
-    let C: Vec<char> = C.into_iter().collect();
+    let R = R.into_iter().collect();
+    let C = C.into_iter().collect();
 
-    let mut solve = Solve::new(R, C, N);
-    solve.dfs(0);
+    let mut solve = Solve::new(R, C);
 
-    if solve.has == "No".to_string() {
+    if solve.dfs('A') {
+        println!("Yes");
+        for a in solve.board.iter() {
+            let a: String = a.iter().collect();
+            println!("{}", a);
+        }
+    } else {
         println!("No");
-        return;
-    }
-
-    for a in solve.board {
-        let ans: String = a.iter().collect();
-        println!("{}", ans);
     }
 }

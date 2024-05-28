@@ -66,15 +66,22 @@ v.sort_by_key(|&x| Total(x));
 let heap: BinaryHeap<Total<f64>> = BinaryHeap::new();
 ```
 
-## 文字列
+## 文字
 
-Vec<char> を大文字に変換する
+### Vec<char> を大文字に変換する
 
 ```rust
 let S: Vec<char> = S
     .into_iter()
     .map(|c| c.to_uppercase().next().unwrap())
     .collect();
+```
+
+### 1 文字進める
+
+```rust
+let a: cahr = 'a';
+let b = char::from_u32(a as u32 + 1).unwrap();
 ```
 
 ## pow
