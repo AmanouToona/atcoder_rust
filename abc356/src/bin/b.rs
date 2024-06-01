@@ -2,10 +2,10 @@ use proconio::input;
 #[allow(non_snake_case)]
 fn main() {
     input! {
-                (N, M): (usize, usize),
+        (N, M): (usize, usize),
         A: [usize; M],
-    X: [[usize; M]; N],
-            }
+        X: [[usize; M]; N],
+    }
 
     let mut tot = vec![0; M];
 
