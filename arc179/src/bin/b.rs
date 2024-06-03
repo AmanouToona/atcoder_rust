@@ -1,4 +1,4 @@
-use ac_library::ModInt1000000007 as Mint;
+use ac_library::ModInt998244353 as Mint;
 use proconio::input;
 use std::collections::HashMap;
 
