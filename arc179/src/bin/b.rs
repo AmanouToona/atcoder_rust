@@ -10,92 +10,47 @@ fn main() {
         X: [usize; M],
     }
 
+    let X: Vec<usize> = X.into_iter().map(|x| x - 1).collect();
+
     // 逆引きの作成
-    let mut b: HashMap<usize, Vec<usize>> = HashMap::new();
-    for (i, &m) in X.iter().enumerate() {
-        b.entry(m).or_insert(Vec::new()).push(i + 1);
-    }
-    let b = b;
-
-    let mut dp: HashMap<Vec<(i64, i64)>, Mint> = HashMap::new();
-    // dp 初期化 i を挿入する
-    for i in 1..=M {
-        let mut state = vec![(0, 0); M + 1];
-
-        if b.contains_key(&i) {
-            for &y in b.get(&i).unwrap().iter() {
-                state[y].0 += 1;
-                state[y].1 += 1;
-            }
-        }
-
-        *dp.entry(state).or_insert(Mint::new(0)) += Mint::new(1);
+    let mut Y: HashMap<usize, Vec<usize>> = HashMap::new();
+    for (i, &x) in X.iter().enumerate() {
+        Y.entry(x).or_insert(Vec::new()).push(i);
     }
 
-    // dp は長さ1のA 状態を保持した初期状態から開始する
+    // dp[i文字目?][右端に挿入できる数字の組み]
+    let mut dp = vec![vec![Mint::new(0); 1 << M]; N + 1];
+    dp[0][(1 << M) - 1] = Mint::new(1); // 初期状態ではすべてを挿入可能
 
-    for _ in 0..(N - 1) {
-        let mut vdp: HashMap<Vec<(i64, i64)>, Mint> = HashMap::new();
-
-        for (k, v) in dp.iter() {
-            // 左端に i を挿入する
-            'left: for i in 1..=M {
-                let mut state = k.clone();
-
-                // 消費不能
-                if state[i].0 < 0i64 {
+    // 遷移
+    for i in 0..N {
+        // println!("\ni: {}", i);
+        for nxt in 0..M {
+            for state in 1..(1 << M) {
+                if state >> nxt & 1 == 0 {
                     continue;
                 }
 
-                state[i].0 -= 1;
+                let mut v_state = state;
+                v_state -= 1 << nxt;
 
-                if b.contains_key(&i) {
-                    for &y in b.get(&i).unwrap().iter() {
-                        state[y].1 += 1;
-                        state[y].1 = state[y].1.max(1);
-                        // if state[y].1 > 1 {
-                        //     continue 'left;
-                        // }
+                for &ok in Y.entry(nxt).or_default().iter() {
+                    if v_state >> ok & 1 == 1 {
+                        continue;
                     }
+
+                    v_state += 1 << ok;
                 }
 
-                *vdp.entry(state).or_insert(Mint::new(0)) += v;
-            }
+                let tmp = dp[i][state];
+                // println!("{:#08b}, {:#08b}, {}", state, v_state, tmp);
 
-            // 右端に i を挿入する
-            'right: for i in 1..=M {
-                let mut state = k.clone();
-
-                if state[i].1 < 0i64 {
-                    continue;
-                }
-
-                state[i].1 -= 1;
-
-                //
-                if b.contains_key(&i) {
-                    for &y in b.get(&i).unwrap().iter() {
-                        state[y].0 += 1;
-                        state[y].0 = state[y].0.max(1);
-                        // state[y].0 += 1;
-                        // if state[y].0 > 1 {
-                        //     continue 'right;
-                        // }
-                    }
-                }
-
-                *vdp.entry(state).or_insert(Mint::new(0)) += v;
+                dp[i + 1][v_state] += tmp;
             }
         }
-
-        dp = vdp;
     }
 
-    let mut ans = Mint::new(0);
-
-    for v in dp.values() {
-        ans += v;
-    }
+    let ans: Mint = dp[N].iter().sum();
 
     println!("{}", ans);
 }
