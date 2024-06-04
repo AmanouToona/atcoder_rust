@@ -5,47 +5,45 @@ fn main() {
         N: usize,
         A: [usize; N],
     }
-    let mut A = A;
-    A.sort();
-    let A = A;
+
+    let a_max = 10usize.pow(6);
+
+    let mut C = vec![0; a_max + 1];
+
+    for a in A.iter() {
+        C[*a] += 1;
+    }
+
+    for i in 0..a_max {
+        C[i + 1] += C[i];
+    }
 
     let mut ans = 0;
 
-    for i in 0..(N - 1) {
-        let mut s = i + 1;
-
-        loop {
-            if A[N - 1] / A[i] == A[s] / A[i] {}
+    for h in 1..=a_max {
+        let c = C[h] - C[h - 1];
+        if c == 0 {
+            continue;
         }
-    }
 
-    for (i, &a) in A.iter().take(N - 1).enumerate() {
-        let mut s = i + 1;
+        ans += c * (c - 1) / 2;
 
+        if C[h] - C[h - 1] == 0 {
+            continue;
+        }
+        let mut i = 1;
         loop {
-            if s >= N {
+            let left = (i * h - 1).max(h);
+            if left > a_max {
                 break;
             }
-            if A[N - 1] / A[i] == A[s] / A[i] {
-                ans += (A[N - 1] / A[s]) * ((N - 1) - s + 1);
-                break;
-            }
+            let right = a_max.min((i + 1) * h - 1);
 
-            let mut left = s;
-            let mut right = N;
+            let cnt = C[h] - C[h - 1];
 
-            while right - left > 1 {
-                let mid = (right + left) / 2;
-                if A[mid] / A[s] > A[s + 1] / A[s] {
-                    right = mid;
-                } else {
-                    left = mid;
-                }
-            }
+            ans += (C[right] - C[left]) * i * cnt;
 
-            ans += A[s + 1] / A[s] * (left - s);
-
-            s = right;
+            i += 1;
         }
     }
 
