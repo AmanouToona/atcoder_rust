@@ -28,9 +28,6 @@ fn main() {
 
         ans += c * (c - 1) / 2;
 
-        if C[h] - C[h - 1] == 0 {
-            continue;
-        }
         let mut i = 1;
         loop {
             let left = (i * h - 1).max(h);
@@ -39,9 +36,7 @@ fn main() {
             }
             let right = a_max.min((i + 1) * h - 1);
 
-            let cnt = C[h] - C[h - 1];
-
-            ans += (C[right] - C[left]) * i * cnt;
+            ans += (C[right] - C[left]) * i * c;
 
             i += 1;
         }
