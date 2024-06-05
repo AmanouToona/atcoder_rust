@@ -1,66 +1,67 @@
-#![recursion_limit = "512"]
-use proconio::{input, marker::Usize1, source::line::LineSource};
+use std::collections::VecDeque;
+
+use proconio::input_interactive;
+
 #[allow(non_snake_case)]
-
 fn main() {
-    let stdin = std::io::stdin();
-    let mut source = proconio::source::line::LineSource::new(stdin.lock());
+    input_interactive!((N, L, R): (usize, usize, usize));
 
-    input! {
-        from &mut source,
-        (_, L, R): (usize, i64,i64)
+    let mut pre: Vec<Option<usize>> = vec![None; (1 << N) + 2];
+    pre[L] = Some(L);
+    let mut q: VecDeque<usize> = VecDeque::from([L]);
+
+    while let Some(u) = q.pop_front() {
+        for i in 0..=N {
+            // 右に移動
+            let v = u + (1 << i);
+            if v <= (1 << N) && pre[v].is_none() {
+                pre[v] = Some(u);
+                q.push_back(v);
+            }
+
+            // 左に移動
+            if u >= (1 << i) {
+                let v = u - (1 << i);
+                if pre[v].is_none() {
+                    pre[v] = Some(u);
+                    q.push_back(v);
+                }
+            }
+
+            if (u >> i) & 1 == 1 {
+                break;
+            }
+        }
+
+        if pre[R + 1].is_some() {
+            break;
+        }
     }
 
+    let mut r = R + 1;
     let mut ans = 0;
+    while r != L {
+        let nxt = pre[r].unwrap();
 
-    let mut L = L;
-    let R = R + 1;
-    let mut q = Vec::new();
-    while L != R {
+        let sig = if nxt < r { 1 } else { -1 };
+
+        let diff = r.abs_diff(nxt);
         let mut i = 0;
-        while L % 2i64.pow(i + 1) == 0 && L + 2i64.pow(i + 1) <= R {
+
+        while (diff >> i) != 1 {
             i += 1;
         }
-        let j = L / 2i64.pow(i);
-        println!("{} {}, {} {}", L, L + 2i64.pow(i), i, j);
-        L += 2i64.pow(i);
+        let j = nxt.min(r) / (1 << i);
 
-        let l = 2i64.pow(i) * j;
-        let r = 2i64.pow(i) * (j + 1) - 1;
-        // println!("{} {}", l, r);
-        q.push((l, r));
+        println!("? {} {}", i, j);
 
-        // input! {
-        //     from &mut source
-        //     a: usize,
-        // }
+        input_interactive!(a: i64);
 
-        // ans += a;
-        // ans %= 100;
+        ans += sig * a;
+        ans = ans.rem_euclid(100);
+
+        r = nxt;
     }
 
-    // for (l, r) in q {
-    //     println!("{} {}", l, r);
-    //     input! {
-    //         from &mut source
-    //         a: usize,
-    //     }
+    println!("! {}", ans);
 }
-
-// println!("{}", ans);
-
-/*
-L, R = map(int, input().split())
-ans = []
-while L != R:
-    i = 0
-    while L % pow(2, i+1) == 0 and L+pow(2, i+1) <= R:
-        i += 1
-    ans.append([L, L+pow(2, i)])
-    L += pow(2, i)
-print(len(ans))
-for l, r in ans:
-    print(l, r)
-*/
-// }
-//
