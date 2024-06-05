@@ -106,3 +106,31 @@ partial_cmp でもソート可能
 ```rust
 ans = ans.rem_euclid(100);
 ```
+
+### 三角関数
+
+atan(v/h) は v.atan2(h) とすると、h=0 の場合でも動作する。
+
+## 定数
+
+pi `use std::f64::const::PI;`
+
+## AC_library
+
+### union find
+
+Dsu (disjoint set union)
+
+## 文字操作
+
+### char -> num
+
+```
+s as usize
+```
+
+### num -> char
+
+```
+std::char::from_digit(s as u32, 10).unwrap()
+```
