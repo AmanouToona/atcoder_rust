@@ -1,45 +1,39 @@
+use im_rc::HashMap;
 use proconio::input;
-use proconio::marker::Chars;
 
+#[derive(Clone)]
 struct Node {
-    key: char,
+    child: HashMap<char, Node>,
     cnt: usize,
-    child: Vec<Node>,
 }
 
-
-struct Solve {
-    tree: Vec<Node>,
-}
-
-impl Solve {
-    fn new() -> Self{
-        Solve{
-            tree: vec![],
-        }
-    }
-
-    fn add(&mut self, s: &Chars) {
-        for n in self.tree.iter() {
-            if n.key == s[0] {
-                &n.key += 1
-            }
+impl Node {
+    fn new() -> Self {
+        Node {
+            child: HashMap::new(),
+            cnt: 0,
         }
     }
 }
-
 
 #[allow(non_snake_case)]
 fn main() {
     input! {
         N: usize,
-        S: [Chars; N],
+        S: [String; N],
+    };
+
+    let mut node = Node::new();
+    let mut ans = 0;
+
+    for s in S.iter() {
+        let mut node = &mut node;
+        for c in s.chars() {
+            node = node.child.entry(c).or_insert(Node::new());
+            ans += node.cnt;
+            node.cnt += 1;
+        }
     }
 
-    let mut tree = Vec::new();
-
-    for S
-
-
-    let mut ans = 0;
+    println!("{}", ans);
 }
