@@ -17,16 +17,12 @@ impl Solve {
     }
 
     fn dfs(&mut self, K: usize, left: usize, top: usize) {
-        // println!("k: {} left:{} top:{}", K, left, top);
         if K == 0 {
-            // println!("blacken {} {}", left, top);
-            // println!("{:?}", self.state);
             self.state[left][top] = '#';
             return;
         }
 
         for (l, t) in iproduct!(0..3, 0..3) {
-            // println!("{}, {}", l, t);
             if l == 1 && t == 1 {
                 continue;
             }
@@ -49,7 +45,6 @@ fn main() {
     let mut solve = Solve::new(N);
 
     solve.dfs(N, 0, 0);
-    // println!("{:?}", solve.state);
 
     for s in solve.state.iter() {
         let a = s.iter().join("");

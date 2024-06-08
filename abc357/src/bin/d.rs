@@ -25,13 +25,11 @@ fn main() {
             // ans += conect * 10usize.pow(ans_digit);  みたいなことをしたい
             ans += conect * ans_digit;
             ans_digit *= times;
-            // ans_digit *=
         }
 
         conect += conect * times;
         times_digit *= 2;
         times *= times;
-        // println!("{}", conect);
     }
 
     println!("{}", ans);
