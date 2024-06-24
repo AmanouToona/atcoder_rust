@@ -6,16 +6,8 @@ fn main() {
         (tx, ty): (i64, i64),
     }
 
-    let mut sx = sx;
-
-    if (sx + sy) % 2 != 0 {
-        sx -= 1;
-    }
-
-    let mut tx = tx;
-    if (tx + ty) % 2 != 0 {
-        tx -= 1;
-    }
+    let sx = if (sx + sy) % 2 != 0 { sx - 1 } else { sx };
+    let tx = if (tx + ty) % 2 != 0 { tx - 1 } else { tx };
 
     let h = (sy - ty).abs();
     let w = (sx - tx).abs();
