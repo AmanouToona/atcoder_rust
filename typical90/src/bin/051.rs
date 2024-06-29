@@ -5,8 +5,9 @@ fn main() {
         (N, K, P): (usize, usize, usize),
         A: [usize; N],
     }
+    let mut H1 = vec![Vec::new(); K + 1]; // half 1
+    let mut H2 = vec![Vec::new(); K + 1]; // half 2
 
-    let mut left = vec![Vec::new(); N / 2 + 1];
     for bit in 0..(1 << (N / 2)) {
         let mut price = 0;
         let mut cnt = 0;
@@ -17,10 +18,12 @@ fn main() {
                 cnt += 1;
             }
         }
-        left[cnt].push(price);
+        if cnt > K {
+            continue;
+        }
+        H1[cnt].push(price);
     }
 
-    let mut right = vec![Vec::new(); N - N / 2 + 1];
     for bit in 0..(1 << (N - N / 2)) {
         let mut price = 0;
         let mut cnt = 0;
@@ -31,48 +34,47 @@ fn main() {
                 cnt += 1;
             }
         }
-        right[cnt].push(price);
+        if cnt > K {
+            continue;
+        }
+        H2[cnt].push(price);
+    }
+
+    // 配列ソート
+    for h in H2.iter_mut() {
+        h.sort();
     }
 
     let mut ans = 0;
-
-    'outer: for (i, lef) in left.iter().take(K + 1).enumerate() {
-        let rig = &mut right[K - i];
-        if rig.is_empty() {
+    for (h1_cnt, h1) in H1.iter().enumerate() {
+        let k = K - h1_cnt;
+        if H2[k].is_empty() {
             continue;
         }
-        rig.sort();
-        for l in lef {
-            if *l > P {
-                continue 'outer;
-            }
 
-            let res = P - *l;
-            if *rig.last().unwrap() <= res {
-                ans += rig.len();
-                continue;
-            }
-            if rig[0] > res {
+        for &h in h1.iter() {
+            if H2[k][0] + h > P {
                 continue;
             }
 
-            let mut min = 0;
-            let mut big = rig.len();
+            if H2[k].last().unwrap() + h <= P {
+                ans += H2[k].len();
+                continue;
+            }
 
-            while big - min > 1 {
-                let mid = (big + min) / 2;
-                if rig[mid] > res {
-                    big = mid;
+            let mut left = 0;
+            let mut right = H2[k].len();
+
+            while right - left > 1 {
+                let mid = (right + left) / 2;
+                if H2[k][mid] + h > P {
+                    right = mid;
                 } else {
-                    min = mid;
+                    left = mid;
                 }
             }
 
-            if *l == 0 && min == 0 {
-                continue;
-            }
-
-            ans += big;
+            ans += right;
         }
     }
 
