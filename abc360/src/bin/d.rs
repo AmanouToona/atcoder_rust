@@ -1,8 +1,5 @@
-use ac_library::{Monoid, Segtree};
-use im_rc::HashMap;
 use proconio::input;
 use proconio::marker::Chars;
-use std::collections::BTreeSet;
 #[allow(non_snake_case)]
 fn main() {
     input! {
@@ -12,57 +9,36 @@ fn main() {
         X: [i64; N],
     }
 
-    let mut ant = Vec::new();
-    for (x, s) in X.into_iter().zip(S.into_iter()) {
-        ant.push((x, s));
-    }
+    let mut go_r = Vec::new(); // 右に向かう蟻の初期位置
+    let mut go_l = Vec::new(); // 左に向かう蟻の初期位置
 
-    ant.sort();
-    // println!("{:?}", ant);
-
-    let mut after = Vec::new();
-    for &(x, s) in ant.iter() {
-        let y = if s == '0' { x - T } else { x + T };
-        after.push(y);
-    }
-
-    // after.reverse();
-
-    // 座標圧縮
-    let mut ps = BTreeSet::new();
-    for y in after.iter() {
-        ps.insert(y);
-    }
-
-    let mut conv = HashMap::new();
-    for (i, p) in ps.iter().enumerate() {
-        conv.insert(p, i);
-    }
-
-    // seg木で回答
-    struct M;
-    impl Monoid for M {
-        type S = usize;
-        fn identity() -> Self::S {
-            0
-        }
-        fn binary_operation(a: &Self::S, b: &Self::S) -> Self::S {
-            a + b
+    for (&x, &s) in X.iter().zip(S.iter()) {
+        if s == '0' {
+            go_l.push(x);
+        } else {
+            go_r.push(x);
         }
     }
 
-    let mut seg = Segtree::<M>::new(conv.len());
-    let n = conv.len();
+    go_l.sort();
+    go_r.sort();
 
+    // 尺取り法
+    let mut left = 0;
+    let mut right = 0;
     let mut ans = 0;
 
-    for y in after.iter() {
-        let y = conv.get(&y).unwrap();
+    for &r in go_r.iter() {
+        let pos = r + 2 * T;
 
-        ans += seg.prod(y..&n);
+        while left < go_l.len() && go_l[left] < r {
+            left += 1;
+        }
+        while right < go_l.len() && go_l[right] <= pos {
+            right += 1;
+        }
 
-        let cnt = seg.get(*y);
-        seg.set(*y, cnt + 1);
+        ans += right - left;
     }
 
     println!("{ans}")

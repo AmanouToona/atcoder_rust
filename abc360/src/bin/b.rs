@@ -7,20 +7,13 @@ fn main() {
         T: Chars,
     }
 
-    let mut s = Vec::new();
-    s.push('0');
-
-    for ss in S.iter() {
-        s.push(*ss);
-    }
-    let S = s;
-
-    for w in 1..(S.len() - 1) {
+    for w in 1..S.len() {
         for s in 1..=w {
             let mut c = Vec::new();
             let mut nxt = s;
-            while nxt < S.len() {
-                c.push(S[nxt]);
+
+            while nxt <= S.len() {
+                c.push(S[nxt - 1]);
                 nxt += w;
             }
 
@@ -30,6 +23,5 @@ fn main() {
             }
         }
     }
-
     println!("No");
 }
