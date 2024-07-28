@@ -6,7 +6,7 @@ fn main() {
         (H, W): (usize, usize),
         (mut sh, mut sw): (usize, usize),
         S: [Chars; H],
-        X: String,
+        X: Chars,
     }
 
     sh -= 1;
@@ -15,7 +15,7 @@ fn main() {
     let mut uh = sh;
     let mut uw = sw;
 
-    for x in X.chars() {
+    for x in X {
         let mut vh = 0;
         let mut vw = 0;
         if x == 'L' {
