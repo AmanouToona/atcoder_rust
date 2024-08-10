@@ -84,6 +84,14 @@ let a: cahr = 'a';
 let b = char::from_u32(a as u32 + 1).unwrap();
 ```
 
+### trim
+
+python の strip に当たる  
+`trim()`
+`trim_matches()`
+`trim_end_matches()`
+などがあり、 `trim_matches()` `trim_end_matches()` は引数を取れる
+
 ## pow
 
 pow の利用時は型が明確であることが必要
