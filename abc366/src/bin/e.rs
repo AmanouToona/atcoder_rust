@@ -9,14 +9,14 @@ fn f(X: Vec<i32>) -> Vec<usize> {
     }
 
     // 位置 -2 * 10^6 での Sigma |x - xi|
-    let band = 2 * 10_i32.pow(6);
-    let mut sum: i32 = 0;
+    let band = 3 * 10_i32.pow(6);
+    let mut sum: i64 = 0;
     for &x in X.iter() {
-        sum += x.abs_diff(-band) as i32;
+        sum += x.abs_diff(-band) as i64;
     }
 
     // 位置を -2 * 10^6 -> 2 * 10^6 に操作しながら距離和を計算する
-    let mut over_i = X.len() as i32;
+    let mut over_i = X.len() as i64;
     let mut under_i = 0;
     let mut res = Vec::new();
     for i in (-band)..(band) {
