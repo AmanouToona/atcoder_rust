@@ -13,7 +13,7 @@
 
 ### sort
 
-- sort_by_key(): x.0 などとして特定の要素でソートする際に利用
+- sort_by_key(): x.0 などとして特定の要素でソートする際に利用, `V.sort_by_key(|x| x.0)`
 - sort_by(): |x, y| y.cmp(&x) とすると降順ソートにできるなど、無名関数でソートする際に利用 デフォルトで昇順
 - .rev() で反転
 - sorted ~: vec の非破壊ソート。 ソート後の vec を返す
@@ -83,6 +83,14 @@ let S: Vec<char> = S
 let a: cahr = 'a';
 let b = char::from_u32(a as u32 + 1).unwrap();
 ```
+
+### trim
+
+python の strip に当たる  
+`trim()`
+`trim_matches()`
+`trim_end_matches()`
+などがあり、 `trim_matches()` `trim_end_matches()` は引数を取れる
 
 ## pow
 
