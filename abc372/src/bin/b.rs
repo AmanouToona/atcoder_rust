@@ -3,24 +3,22 @@ use proconio::input;
 #[allow(non_snake_case)]
 fn main() {
     input! {
-        mut M: i64,
+        mut M: usize,
     }
 
     let mut ans = Vec::new();
 
     while M > 0 {
-        let mut i = 0;
-
-        while i + 1 <= 10 && 3_i32.pow(i + 1) as i64 <= M {
-            i += 1;
+        let mut a = 0;
+        while a + 1 <= 10 && 3i32.pow(a + 1) as usize <= M {
+            a += 1;
         }
 
-        ans.push(i);
-        M -= 3_i32.pow(i) as i64;
+        ans.push(a);
+        M -= 3i32.pow(a) as usize;
     }
 
     println!("{}", ans.len());
-    let mut ans: String = ans.iter().join(" ");
-
+    let ans: String = ans.iter().join(" ");
     println!("{ans}");
 }

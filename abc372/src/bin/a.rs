@@ -6,6 +6,6 @@ fn main() {
         S: Chars,
     }
 
-    let ans: String = S.into_iter().filter(|x| *x != '.').collect();
-    println!("{}", ans);
+    let ans: String = S.iter().filter(|x| x != &&'.').collect();
+    println!("{ans}");
 }

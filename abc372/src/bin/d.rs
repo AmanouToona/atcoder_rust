@@ -6,43 +6,24 @@ use std::collections::BinaryHeap;
 fn main() {
     input! {
         N: usize,
-        H: [i64;N],
-    }
-
-    let mut q: BinaryHeap<i64> = BinaryHeap::new();
-
-    let mut minus = Vec::new();
-
-    for h in H.iter().rev() {
-        let mut res = 0;
-        while !q.is_empty() {
-            let top = -*q.peek().unwrap();
-            if h > &top {
-                q.pop();
-                res -= 1;
-            } else {
-                break;
-            }
-        }
-
-        q.push(-(*h));
-
-        minus.push(res);
-    }
-
-    for i in 0..(minus.len() - 1) {
-        minus[i + 1] += minus[i];
+        H : [usize; N],
     }
 
     let mut ans = Vec::new();
-    for i in 0..N {
-        ans.push(i as i64);
+    let mut q = BinaryHeap::new();
+
+    for h in H.into_iter().rev() {
+        ans.push(q.len());
+
+        while !q.is_empty() && q.peek().unwrap() > &Reverse(h) {
+            q.pop();
+        }
+
+        q.push(Reverse(h));
     }
 
-    for i in 1..N {
-        ans[i] += minus[i - 1];
-    }
+    ans = ans.into_iter().rev().collect();
 
-    let ans: String = ans.iter().rev().join(" ");
-    println!("{ans}")
+    let ans: String = ans.iter().join(" ");
+    println!("{ans}");
 }

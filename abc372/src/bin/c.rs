@@ -1,59 +1,44 @@
-use amplify::confinement::Collection;
 use proconio::input;
 use proconio::marker::Chars;
-use std::collections::BTreeSet;
 #[allow(non_snake_case)]
 fn main() {
     input! {
-            (N, Q): (usize, usize),
-          mut   S: Chars,
-    XC: [(usize, char); Q],
-        }
+        (_, Q): (usize, usize),
+        S: Chars,
+        XC: [(usize, char); Q],
+    }
+
+    let target = "ABC".to_string().chars().collect::<Vec<char>>();
+
+    let mut s: Vec<char> = "..".to_string().chars().collect();
+    s.extend(S);
+    s.extend("..".to_string().chars().collect::<Vec<char>>());
 
     let mut cnt = 0;
-
-    for i in 0..(S.len() - 2) {
-        if S[i..(i + 3)] == ['A', 'B', 'C'] {
+    for left in 0..(s.len() - 2) {
+        if s[left..left + 3] == target {
             cnt += 1;
         }
     }
 
-    for (x, c) in XC.iter() {
-        let x = x - 1;
-        for i in 0..3 {
-            if x < i {
-                continue;
-            }
+    for (x, c) in XC.into_iter() {
+        let x = x - 1 + 2; // ".." 分の 2 を足す
 
-            let start = x - i;
-
-            if start + 3 > S.len() {
-                continue;
-            }
-
-            if S[start..(start + 3)] == ['A', 'B', 'C'] {
+        for left in x..x + 3 {
+            let left = left - 2;
+            if s[left..left + 3] == target {
                 cnt -= 1;
             }
         }
 
-        S[x] = *c;
+        s[x] = c;
+        for left in x..x + 3 {
+            let left = left - 2;
 
-        for i in 0..3 {
-            if x < i {
-                continue;
-            }
-
-            let start = x - i;
-
-            if start + 3 > S.len() {
-                continue;
-            }
-
-            if S[start..(start + 3)] == ['A', 'B', 'C'] {
+            if s[left..left + 3] == target {
                 cnt += 1;
             }
         }
-
         println!("{cnt}");
     }
 }
