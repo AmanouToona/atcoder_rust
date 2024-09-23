@@ -21,6 +21,13 @@
 ### binary Heap
 
 - binaryHeap: 降順で pop
+- 逆順なら Reverse を使う
+
+```rust
+use std::cmp::Reverse;
+let mut heap = BinaryHeap::new();
+heap.push(Reverse(1));
+```
 
 ### HashSet
 
