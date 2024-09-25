@@ -162,5 +162,19 @@ s as usize
 ### num -> char
 
 ```
-std::char::from_digit(s as u32, 10).unwrap()
+num.to_string();
+//std::char::from_digit(s as u32, 10).unwrap()
+```
+
+### next_permutation
+
+```
+use permutohedron::LexicalPermutation;
+S.sort();
+loop {
+
+    if !S.next_permutation() {
+        break;
+    }
+}
 ```
