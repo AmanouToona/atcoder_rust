@@ -7,29 +7,29 @@ fn main() {
         A: [usize; N],
     }
 
-    let mut cnt = Vec::new();
-    let mut dict = HashMap::new();
-    for a in A.iter() {
-        *dict.entry(*a).or_insert(0) += 1;
-        cnt.push(dict.len());
+    let mut position: HashMap<usize, Vec<usize>> = HashMap::new();
+
+    for (i, &a) in A.iter().enumerate() {
+        position.entry(a).or_insert_with(|| vec![0]).push(i + 1);
+    }
+
+    for (k, v) in position.iter_mut() {
+        v.push(N + 1);
     }
 
     let mut ans = 0;
 
-    for i in 0..cnt.len() {
-        let mut in_cnt = cnt.clone();
+    for pos in position.values() {
+        ans += N * (N + 1) / 2;
 
-        let res = in_cnt[i] - 1;
-        for j in 0..in_cnt.len() {
-            in_cnt[j] = in_cnt[j].saturating_sub(res);
+        for i in 0..pos.len() - 1 {
+            let left = pos[i];
+            let right = pos[i + 1];
+
+            let num = right - left - 1;
+            ans -= num * (num + 1) / 2;
         }
-        ans += in_cnt.iter().rev().take(N - i).sum::<usize>();
-        println!(
-            "{:?} {}",
-            in_cnt,
-            in_cnt.iter().rev().take(N - i).sum::<usize>()
-        );
     }
 
-    println!("{:?}, {}", cnt, ans);
+    println!("{ans}");
 }
