@@ -1,64 +1,7 @@
 use ac_library::ModInt998244353 as Mint;
 use proconio::input;
-#[allow(non_snake_case)]
-struct DP {
-    dp: Vec<Vec<Option<Mint>>>, // 半開区間 dp[left][right] 条件を満たす
-    cumsum: Vec<i64>,           // 半開区間
-    K: i64,
-    N: usize,
-}
-#[allow(non_snake_case)]
-impl DP {
-    fn new(N: usize, K: i64, A: &Vec<i64>) -> Self {
-        let mut cumsum = vec![0];
 
-        for (i, &a) in A.iter().enumerate() {
-            cumsum.push(cumsum[i] + a);
-        }
-
-        let mut dp = vec![vec![None; N + 1]; N + 1];
-
-        for i in 0..N + 1 {
-            dp[i][i] = Some(Mint::new(0));
-        }
-
-        for i in 0..N {
-            dp[i][i + 1] = Some(Mint::new(0));
-        }
-
-        for (i, a) in A.iter().enumerate() {
-            if *a != K {
-                if let Some(ref mut v) = dp[i][i + 1] {
-                    *v += 1;
-                }
-            }
-        }
-
-        DP { dp, cumsum, K, N }
-    }
-
-    fn rec(&mut self, left: usize, right: usize) -> Mint {
-        if let Some(v) = self.dp[left][right] {
-            return v;
-        }
-
-        let mut cnt = Mint::new(0);
-
-        for k in left + 1..right {
-            if self.cumsum[k] - self.cumsum[left] != self.K {
-                cnt += self.rec(k, right);
-            }
-        }
-
-        if self.cumsum[right] - self.cumsum[left] != self.K {
-            cnt += 1;
-        }
-
-        self.dp[left][right] = Some(cnt);
-        cnt
-    }
-}
-
+use std::collections::BTreeMap;
 #[allow(non_snake_case)]
 fn main() {
     input! {
@@ -66,8 +9,24 @@ fn main() {
         A: [i64; N],
     }
 
-    let mut solve = DP::new(N, K, &A);
-    let ans = solve.rec(0, N);
+    let mut cusum: Vec<i64> = Vec::from([0]);
 
-    println!("{}", ans);
+    for a in A.iter() {
+        cusum.push(*a + cusum.last().unwrap());
+    }
+
+    let mut map: BTreeMap<i64, Mint> = BTreeMap::new();
+    map.insert(0, Mint::new(1));
+    let mut all = Mint::new(1);
+    let mut dp = Mint::new(0);
+
+    for (i, &a) in A.iter().enumerate() {
+        dp = all - *map.entry(cusum[i + 1] - K).or_insert(Mint::new(0));
+        eprintln!("dp: {dp}");
+        *map.entry(cusum[i + 1]).or_insert(Mint::new(0)) += dp;
+
+        all += dp;
+    }
+
+    println!("{dp}");
 }
