@@ -25,9 +25,9 @@ fn main() {
         dp[i][i] = 0;
     }
 
-    for i in 0..N {
-        for j in 0..N {
-            for k in 0..N {
+    for k in 0..N {
+        for i in 0..N {
+            for j in 0..N {
                 dp[i][j] = dp[i][j].min(dp[i][k] + dp[k][j]);
             }
         }
@@ -59,8 +59,8 @@ fn main() {
                     let (from, to) = if (direction >> i) & 1 == 0 {
                         *num2edge.get(&b[i]).unwrap()
                     } else {
-                        let &(v, u) = num2edge.get(&b[i]).unwrap();
-                        (u, v)
+                        let &(u, v) = num2edge.get(&b[i]).unwrap();
+                        (v, u)
                     };
 
                     can += dp[now][from];
