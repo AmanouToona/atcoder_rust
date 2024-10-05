@@ -12,57 +12,66 @@ fn main() {
         Q: usize,
     }
 
-    // ? 多重編の管理の一般的な方法は?
-    // g: (to, cost, edge_num)
-    let mut g: Vec<Vec<(usize, usize, usize)>> = vec![Vec::new(); N];
-
-    for (i, &(u, v, t)) in uvt.iter().enumerate() {
+    // ワーシャルフロイド
+    let mut dp = vec![vec![10usize.pow(15u32); N]; N];
+    for &(u, v, t) in uvt.iter() {
         let u = u - 1;
         let v = v - 1;
 
-        g[u].push((v, t, i));
-        g[v].push((u, t, i));
+        dp[u][v] = dp[u][v].min(t);
+        dp[v][u] = dp[v][u].min(t);
+    }
+    for i in 0..N {
+        dp[i][i] = 0;
     }
 
-    'outer: for _ in 0..Q {
+    for i in 0..N {
+        for j in 0..N {
+            for k in 0..N {
+                dp[i][j] = dp[i][j].min(dp[i][k] + dp[k][j]);
+            }
+        }
+    }
+
+    // 辺の管理
+    let mut num2edge = HashMap::new();
+    for (i, &(u, v, _)) in uvt.iter().enumerate() {
+        let u = u - 1;
+        let v = v - 1;
+
+        num2edge.insert(i, (u, v));
+    }
+
+    for _ in 0..Q {
         input! {
             K: usize,
             B: [usize; K],
         }
 
-        let B = B.into_iter().map(|x| x - 1).collect::<Vec<usize>>();
-        let mut b2num = HashMap::new();
-        for (i, b) in B.iter().enumerate() {
-            b2num.insert(*b, i);
-        }
+        let B: Vec<usize> = B.into_iter().map(|x| x - 1).collect();
 
-        let mut used = HashSet::new();
-        let mut q = BinaryHeap::new();
-        q.push((Reverse(0), 0, 0)); // cost, node, used b
-        used.insert((0, 0)); // node, used b
+        let mut ans = 10usize.pow(15u32);
+        for b in B.iter().permutations(K) {
+            for direction in 0..(1 << K) {
+                let mut now = 0;
+                let mut can = 0;
+                for i in 0..K {
+                    let (from, to) = if (direction >> i) & 1 == 0 {
+                        *num2edge.get(&b[i]).unwrap()
+                    } else {
+                        let &(v, u) = num2edge.get(&b[i]).unwrap();
+                        (u, v)
+                    };
 
-        let goal = (N - 1, 2usize.pow((K as i32).try_into().unwrap()) - 1);
+                    can += dp[now][from];
+                    can += uvt[*b[i]].2;
 
-        while let Some((Reverse(u_cost), u, e)) = q.pop() {
-            for (v, diff_cost, e_num) in g[u].iter() {
-                let mut e_v = e;
-                if b2num.keys().contains(&e_num) {
-                    e_v |= 1 << b2num.get(&e_num).unwrap();
+                    now = to;
                 }
-
-                if used.contains(&(*v, e_v)) {
-                    continue;
-                }
-
-                let v_cost = u_cost + diff_cost;
-                if (*v, e_v) == goal {
-                    println!("{v_cost}");
-                    continue 'outer;
-                }
-
-                used.insert((*v, e_v));
-                q.push((Reverse(v_cost), *v, e_v));
+                can += dp[now][N - 1];
+                ans = ans.min(can);
             }
         }
+        println!("{ans}");
     }
 }
