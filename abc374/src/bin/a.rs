@@ -6,7 +6,7 @@ fn main() {
         S: Chars,
     }
 
-    if S[S.len() - 3..S.len()] == ['s', 'a', 'n'] {
+    if S[S.len() - 3..S.len()] == "san".chars().collect::<Vec<char>>() {
         println!("Yes");
     } else {
         println!("No");

@@ -20,20 +20,4 @@ fn main() {
         }
     }
     println!("0");
-
-    // if S.len() > T.len() {
-    //     println!("{}", T.len() + 1);
-    //     return;
-    // } else if S.len() < T.len() {
-    //     println!("{}", S.len() + 1);
-    //     return;
-    // } else {
-    //     for (i, (s, t)) in S.iter().zip(T.iter()).enumerate() {
-    //         if s != t {
-    //             println!("{}", i + 1);
-    //             return;
-    //         }
-    //     }
-    // }
-    // println!("0");
 }
