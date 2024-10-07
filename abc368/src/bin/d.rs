@@ -1,6 +1,6 @@
-use im_rc::HashSet;
 use proconio::input;
 use std::collections::BinaryHeap;
+use std::collections::HashSet;
 #[allow(non_snake_case)]
 struct Search {
     node2num: Vec<usize>,
@@ -9,6 +9,7 @@ struct Search {
     n: usize,
 }
 
+#[allow(non_snake_case)]
 impl Search {
     fn new(N: usize) -> Self {
         Search {
@@ -67,7 +68,10 @@ fn main() {
         vs.push(search.node2num[n]);
     }
 
-    let mut done = HashSet::new();
+    let mut done: HashSet<usize> = HashSet::new();
+    for v in V.iter() {
+        done.insert(search.node2num[*v]);
+    }
 
     while vs.len() > 1 {
         let u = vs.pop().unwrap();
