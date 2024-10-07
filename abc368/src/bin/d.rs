@@ -1,37 +1,34 @@
-use proconio::input;
-use std::collections::BinaryHeap;
 use std::collections::HashSet;
-#[allow(non_snake_case)]
-struct Search {
-    node2num: Vec<usize>,
-    num2node: Vec<usize>,
-    fp: Vec<bool>,
-    n: usize,
+
+use proconio::input;
+
+struct Info {
+    g: Vec<Vec<usize>>,
+    V: HashSet<usize>,
+    cnt: Vec<usize>,
 }
 
-#[allow(non_snake_case)]
-impl Search {
-    fn new(N: usize) -> Self {
-        Search {
-            node2num: vec![0; N],
-            num2node: vec![0; N],
-            fp: vec![false; N],
-            n: 0,
+impl Info {
+    fn new(g: &Vec<Vec<usize>>, n: usize, v: &Vec<usize>) -> Self {
+        Info {
+            g: g.clone(),
+            V: v.iter().cloned().collect(),
+            cnt: vec![0; n],
         }
     }
 }
 
-fn dfs(u: usize, g: &Vec<Vec<usize>>, s: &mut Search) {
-    s.fp[u] = true;
-    s.node2num[u] = s.n;
-    s.num2node[s.n] = u;
-    s.n += 1;
-
-    for &v in g[u].iter() {
-        if s.fp[v] == true {
+fn dfs(p: usize, u: usize, info: &mut Info) {
+    if info.V.contains(&u) {
+        info.cnt[u] += 1;
+    }
+    for &v in info.g[u].clone().iter() {
+        if v == p {
             continue;
         }
-        dfs(v, &g, s);
+        dfs(u, v, info);
+
+        info.cnt[u] += info.cnt[v];
     }
 }
 
@@ -39,7 +36,7 @@ fn dfs(u: usize, g: &Vec<Vec<usize>>, s: &mut Search) {
 fn main() {
     input! {
         (N, K): (usize, usize),
-        AB: [(usize, usize); N - 1],
+        AB: [(usize, usize ); N - 1],
         V: [usize; K],
     }
 
@@ -51,47 +48,17 @@ fn main() {
         g[b].push(a);
     }
 
-    let V: Vec<usize> = V.into_iter().map(|x| x - 1).collect();
+    let V: Vec<usize> = V.iter().cloned().map(|x| x - 1).collect();
 
-    let mut node2num = vec![0; N];
-    let mut num2node = vec![0; N];
-    let mut fp = vec![false; N];
-
-    let mut search = Search::new(N);
-
-    dfs(0, &g, &mut search);
+    let mut info = Info::new(&g, N, &V);
+    dfs(V[0], V[0], &mut info);
 
     let mut ans = 0;
-    let mut vs: BinaryHeap<usize> = BinaryHeap::new();
-
-    for &n in V.iter() {
-        vs.push(search.node2num[n]);
-    }
-
-    let mut done: HashSet<usize> = HashSet::new();
-    for v in V.iter() {
-        done.insert(search.node2num[*v]);
-    }
-
-    while vs.len() > 1 {
-        let u = vs.pop().unwrap();
-        let u = search.num2node[u];
-
-        for &v in g[u].iter() {
-            if search.node2num[v] > search.node2num[u] {
-                continue;
-            }
-
+    for i in 0..N {
+        if info.cnt[i] != 0 {
             ans += 1;
-            let v_nom = search.node2num[v];
-            if done.contains(&v_nom) {
-                break;
-            }
-
-            vs.push(v_nom);
-            done.insert(v_nom);
         }
     }
 
-    println!("{}", ans + 1);
+    println!("{ans}");
 }
