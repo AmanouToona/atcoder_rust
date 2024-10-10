@@ -29,6 +29,42 @@ let mut heap = BinaryHeap::new();
 heap.push(Reverse(1));
 ```
 
+### BtreeSet
+
+2 分探索
+
+```rust
+use std::collections::BTreeSet;
+use std::ops::Bound::{Included, Unbounded};
+#[allow(non_snake_case)]
+fn main() {
+    let mut tree = BTreeSet::new();
+
+    for i in [1, 3, 5, 6, 8] {
+        tree.insert(i);
+    }
+
+    for i in 0..=9 {
+        // iの次に大きな数を得る
+        let upper = tree.range((Included(&i), Unbounded)).next();
+
+        if upper == None {
+            println!("{i} no upper");
+        } else {
+            println!("{i} {:?}", upper);
+        }
+
+        // i より小さな最大の数を得る
+        let lower = tree.range((Unbounded, Included(&i))).rev().next();
+        if lower == None {
+            println!("{i} no lower");
+        } else {
+            println!("{i} {:?}", lower);
+        }
+    }
+}
+```
+
 ### HashSet
 
 - 挿入は `insert`
