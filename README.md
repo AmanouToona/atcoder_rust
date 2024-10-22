@@ -11,9 +11,39 @@
 - saturating_sub: usize の引き算の時に最小値を 0 に固定
 - wrapping_add: + !0 を -1 の役割で利用する時に使用
 
+## combination nCk の pow
+
+use ac_library::ModInt998244353 as Mint;
+
+```rust
+
+impl Nck {
+    fn new(n: usize) -> Self {
+        let mut finv = vec![Mint::new(1); n + 1];
+        let mut fac = vec![Mint::new(1); n + 1];
+        let mut inv = vec![Mint::new(1); n + 1];
+
+        for i in 2..=n {
+            fac[i] = fac[i - 1] * i;
+            inv[i] = -inv[998244353 % i] * (998244353 / i);
+            finv[i] = finv[i - 1] * inv[i];
+        }
+
+        Nck { finv, fac }
+    }
+
+    fn get(&self, n: usize, k: usize) -> Mint {
+        if n < k {
+            return Mint::new(0);
+        }
+        self.fac[n] * self.finv[k] * self.finv[n - k]
+    }
+}
+```
+
 ### sort
 
-- sort_by_key(): x.0 などとして特定の要素でソートする際に利用
+- sort_by_key(): x.0 などとして特定の要素でソートする際に利用, `V.sort_by_key(|x| x.0)`
 - sort_by(): |x, y| y.cmp(&x) とすると降順ソートにできるなど、無名関数でソートする際に利用 デフォルトで昇順
 - .rev() で反転
 - sorted ~: vec の非破壊ソート。 ソート後の vec を返す
@@ -21,6 +51,63 @@
 ### binary Heap
 
 - binaryHeap: 降順で pop
+- 逆順なら Reverse を使う
+
+```rust
+use std::cmp::Reverse;
+let mut heap = BinaryHeap::new();
+heap.push(Reverse(1));
+```
+
+### BtreeSet
+
+2 分探索
+
+```rust
+use std::collections::BTreeSet;
+use std::ops::Bound::{Included, Unbounded};
+#[allow(non_snake_case)]
+fn main() {
+    let mut tree = BTreeSet::new();
+
+    for i in [1, 3, 5, 6, 8] {
+        tree.insert(i);
+    }
+
+    for i in 0..=9 {
+        // iの次に大きな数を得る
+        let upper = tree.range((Included(&i), Unbounded)).next();
+
+        if upper == None {
+            println!("{i} no upper");
+        } else {
+            println!("{i} {:?}", upper);
+        }
+
+        // i より小さな最大の数を得る
+        let lower = tree.range((Unbounded, Included(&i))).rev().next();
+        if lower == None {
+            println!("{i} no lower");
+        } else {
+            println!("{i} {:?}", lower);
+        }
+    }
+}
+```
+
+### HashSet
+
+- 挿入は `insert`
+- 要素があるかの確認は `is_empty()`
+
+### HashMap
+
+- 各種 itor: key: `keys()`, value: `valus()`, item: `iter()`
+- contain_key(): 存在確認
+
+### entry
+
+- and_modify 操作 and_modify(|e: &mut usize| *e = (*e).min(a)) とか
 
 ### for
 
@@ -52,6 +139,37 @@ v.sort_by_key(|&x| Total(x));
 let heap: BinaryHeap<Total<f64>> = BinaryHeap::new();
 ```
 
+## 文字
+
+### Vec<char> を大文字に変換する
+
+```rust
+let S: Vec<char> = S
+    .into_iter()
+    .map(|c| c.to_uppercase().next().unwrap())
+    .collect();
+```
+
+### 1 文字進める
+
+```rust
+let a: cahr = 'a';
+let b = char::from_u32(a as u32 + 1).unwrap();
+```
+
+### trim
+
+python の strip に当たる  
+`trim()`
+`trim_matches()`
+`trim_end_matches()`
+などがあり、 `trim_matches()` `trim_end_matches()` は引数を取れる
+
+## pow
+
+pow の利用時は型が明確であることが必要
+`2.pow(2)` ではなく `2i32.pow(2)` など
+
 ```rust
 fn main() {
     let mut v: Vec<f64> = vec![10.2, 4.6, 0.01, 6.2, 12.0];
@@ -61,6 +179,14 @@ fn main() {
 ```
 
 partial_cmp でもソート可能
+
+## MOD
+
+`rem_euclid` を使う
+
+```rust
+ans = ans.rem_euclid(100);
+```
 
 ### 三角関数
 
@@ -87,5 +213,19 @@ s as usize
 ### num -> char
 
 ```
-std::char::from_digit(s as u32, 10).unwrap()
+num.to_string();
+//std::char::from_digit(s as u32, 10).unwrap()
+```
+
+### next_permutation
+
+```
+use permutohedron::LexicalPermutation;
+S.sort();
+loop {
+
+    if !S.next_permutation() {
+        break;
+    }
+}
 ```
