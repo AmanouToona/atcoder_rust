@@ -11,6 +11,36 @@
 - saturating_sub: usize の引き算の時に最小値を 0 に固定
 - wrapping_add: + !0 を -1 の役割で利用する時に使用
 
+## combination nCk の pow
+
+use ac_library::ModInt998244353 as Mint;
+
+```rust
+
+impl Nck {
+    fn new(n: usize) -> Self {
+        let mut finv = vec![Mint::new(1); n + 1];
+        let mut fac = vec![Mint::new(1); n + 1];
+        let mut inv = vec![Mint::new(1); n + 1];
+
+        for i in 2..=n {
+            fac[i] = fac[i - 1] * i;
+            inv[i] = -inv[998244353 % i] * (998244353 / i);
+            finv[i] = finv[i - 1] * inv[i];
+        }
+
+        Nck { finv, fac }
+    }
+
+    fn get(&self, n: usize, k: usize) -> Mint {
+        if n < k {
+            return Mint::new(0);
+        }
+        self.fac[n] * self.finv[k] * self.finv[n - k]
+    }
+}
+```
+
 ### sort
 
 - sort_by_key(): x.0 などとして特定の要素でソートする際に利用, `V.sort_by_key(|x| x.0)`
@@ -183,5 +213,19 @@ s as usize
 ### num -> char
 
 ```
-std::char::from_digit(s as u32, 10).unwrap()
+num.to_string();
+//std::char::from_digit(s as u32, 10).unwrap()
+```
+
+### next_permutation
+
+```
+use permutohedron::LexicalPermutation;
+S.sort();
+loop {
+
+    if !S.next_permutation() {
+        break;
+    }
+}
 ```
