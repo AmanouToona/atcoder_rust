@@ -18,18 +18,18 @@ fn solve(S: &Vec<char>, K: usize) -> char {
         double -= 1;
         if K > n * 2usize.pow(double) {
             K -= n * 2usize.pow(double);
-            not = if not == false { true } else { false };
+            not = !not;
         }
     }
 
     K -= 1;
     let mut ans = S[K];
     if not == true {
-        if ans.is_uppercase() {
-            ans = ans.to_ascii_lowercase();
+        ans = if ans.is_uppercase() {
+            ans.to_ascii_lowercase()
         } else {
-            ans = ans.to_ascii_uppercase();
-        }
+            ans.to_ascii_uppercase()
+        };
     }
     ans
 }
