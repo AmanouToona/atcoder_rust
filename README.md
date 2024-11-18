@@ -229,3 +229,8 @@ loop {
     }
 }
 ```
+
+### segtree
+
+practice j.rs 参照
+lazy は l.rs 参照
