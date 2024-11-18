@@ -25,18 +25,19 @@ fn main() {
             let x = x - 1;
             let c = c - 1;
 
-            let g1 = uf.leader(x);
+            let x = uf.leader(x);
             // 既に同色なら処理不要
-            if color[g1] == c {
+            if color[x] == c {
                 continue;
             }
 
             // 色の増減処理
-            cnt[color[g1]] -= uf.size(g1);
-            cnt[c] += uf.size(g1);
+            let sz = uf.size(x);
+            cnt[color[x]] -= sz;
+            cnt[c] += sz;
 
             // 左端が左のグループと結合可能か？
-            let mut l1 = left[g1];
+            let mut l1 = left[x];
 
             if l1 > 0 {
                 let r2 = l1 - 1;
@@ -44,12 +45,12 @@ fn main() {
                 // 結合可能なら結合する
                 if color[g2] == c {
                     l1 = left[g2];
-                    uf.merge(g1, g2);
+                    uf.merge(x, g2);
                 }
             }
 
             // 右端が右のグループと結合可能か？
-            let mut r1 = right[g1];
+            let mut r1 = right[x];
 
             if r1 < N - 1 {
                 let l2 = r1 + 1;
@@ -57,14 +58,14 @@ fn main() {
 
                 if color[g2] == c {
                     r1 = right[g2];
-                    uf.merge(g1, g2);
+                    uf.merge(x, g2);
                 }
             }
 
-            let g1 = uf.leader(x);
-            color[g1] = c;
-            left[g1] = l1;
-            right[g1] = r1;
+            let x = uf.leader(x);
+            color[x] = c;
+            left[x] = l1;
+            right[x] = r1;
 
             // println!("*");
             // println!("{:?}", color);
