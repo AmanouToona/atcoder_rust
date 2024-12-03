@@ -141,6 +141,17 @@ let heap: BinaryHeap<Total<f64>> = BinaryHeap::new();
 
 ## 文字
 
+### 数字1文字を数字に変換
+
+```rust
+let x: usize = x as usize - '0' as usize;
+```
+
+### 数字を文字に変換する
+```rust
+let x: char = (x + '0' as usize) as char;
+
+
 ### Vec<char> を大文字に変換する
 
 ```rust
