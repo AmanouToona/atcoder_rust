@@ -1,6 +1,28 @@
 use num_integer::Roots;
 use proconio::input;
-use std::collections::BTreeSet;
+
+fn eratosthenes(n: usize) -> Vec<usize> {
+    let mut is_prime = vec![true; n + 1];
+    is_prime[0] = false;
+    is_prime[1] = false;
+
+    let mut primes = Vec::new();
+
+    for i in 2..=n {
+        if is_prime[i] {
+            primes.push(i);
+        }
+
+        let mut j = i + i;
+
+        while j <= n {
+            is_prime[j] = false;
+            j += i;
+        }
+    }
+
+    primes
+}
 
 #[allow(non_snake_case)]
 fn main() {
@@ -8,33 +30,29 @@ fn main() {
         N: usize,
     }
 
-    let mut cnt = vec![0; N.sqrt() + 1];
-    let mut skip = BTreeSet::new();
-    for i in 2..=N.sqrt() {
-        let mut j = i;
-
-        skip.insert(j * j);
-
-        if skip.contains(&j) {
-            continue;
-        }
-        cnt[j] += 1;
-
-        while j + i <= N.sqrt() {
-            cnt[j + i] += 1;
-            j += i;
-        }
-    }
+    let primes = eratosthenes(N.sqrt());
 
     let mut ans = 0;
+    let mut n = primes.len() - 1;
 
-    for i in 2..=N.sqrt() {
-        if cnt[i] == 4 {
-            ans += 1;
+    for (i, &p) in primes.iter().enumerate() {
+        while primes[n] * primes[n] * p * p > N && n > 0 && n > i {
+            n -= 1;
         }
+
+        if i >= n {
+            break;
+        }
+
+        ans += n - i;
     }
 
-    println!("{:?}", cnt);
+    for &p in primes.iter() {
+        if p.pow(8) > N {
+            break;
+        }
+        ans += 1;
+    }
 
     println!("{ans}");
 }
