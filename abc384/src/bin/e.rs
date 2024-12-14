@@ -5,9 +5,9 @@ use std::collections::BinaryHeap;
 #[allow(non_snake_case)]
 fn main() {
     input! {
-        (H, W, X) : (usize, usize, i64),
+        (H, W, X) : (usize, usize, i128),
         (P, Q): (usize, usize),
-        S: [[i64; W]; H],
+        S: [[i128; W]; H],
     }
 
     let mut used = vec![vec![false; W]; H];
