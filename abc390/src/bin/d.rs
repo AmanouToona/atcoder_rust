@@ -26,6 +26,7 @@ impl Sol {
 
     fn dfs(&mut self, u: usize) {
         if u == self.N - 1 {
+            println!("{:?}", self.B);
             self.X.insert(self.XOR);
             return;
         }
@@ -57,8 +58,10 @@ impl Sol {
 fn main() {
     input! {
         N: usize,
-        A: [i64; N],
+      mut  A: [i64; N],
     }
+
+    A.sort();
 
     let mut sol = Sol::new(N, A);
 
