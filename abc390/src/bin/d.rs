@@ -1,56 +1,43 @@
 use proconio::input;
 use std::collections::HashSet;
 
-struct Sol {
-    N: usize,
-    A: Vec<i64>,
-    B: Vec<i64>,
-    XOR: i64,
-    X: HashSet<i64>,
+struct Solve {
+    n: usize,
+    a: Vec<usize>,
+    b: Vec<Vec<usize>>,
+    xor: HashSet<usize>,
 }
 
-impl Sol {
-    fn new(N: usize, A: Vec<i64>) -> Self {
-        let mut xor = 0;
-        for a in A.iter() {
-            xor ^= a;
-        }
-        Sol {
-            N: N,
-            B: A.clone(),
-            A: A,
-            XOR: xor,
-            X: HashSet::new(),
+impl Solve {
+    fn new(n: usize, a: Vec<usize>) -> Self {
+        Solve {
+            n,
+            a,
+            b: vec![],
+            xor: HashSet::new(),
         }
     }
 
-    fn dfs(&mut self, u: usize) {
-        if u == self.N - 1 {
-            println!("{:?}", self.B);
-            self.X.insert(self.XOR);
+    fn dfs(&mut self, i: usize) {
+        if i == self.n {
+            let mut xor = 0;
+            for bs in self.b.iter() {
+                xor ^= bs.iter().sum::<usize>();
+            }
+            self.xor.insert(xor);
+
             return;
         }
 
-        for i in u..self.N {
-            let xor = self.XOR;
-
-            self.XOR ^= self.B[u];
-            self.XOR ^= self.B[i];
-
-            self.B[i] += self.A[u];
-            self.B[u] -= self.A[u];
-
-            self.XOR ^= self.B[u];
-            self.XOR ^= self.B[i];
-
-            self.dfs(u + 1);
-
-            self.B[i] -= self.A[u];
-            self.B[u] += self.A[u];
-
-            self.XOR = xor;
+        for j in 0..self.b.len() {
+            self.b[j].push(self.a[i]);
+            self.dfs(i + 1);
+            self.b[j].pop();
         }
-        return;
+
+        self.b.push(vec![self.a[i]]);
+        self.dfs(i + 1);
+        self.b.pop();
     }
 }
 
@@ -58,15 +45,12 @@ impl Sol {
 fn main() {
     input! {
         N: usize,
-      mut  A: [i64; N],
+        A: [usize; N],
     }
 
-    A.sort();
+    let mut solve = Solve::new(N, A);
 
-    let mut sol = Sol::new(N, A);
+    solve.dfs(0);
 
-    sol.dfs(0);
-
-    println!("{}", sol.X.len());
+    println!("{}", solve.xor.len());
 }
-// 12! = 479001600 > 10^8
