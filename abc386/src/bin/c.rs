@@ -8,58 +8,59 @@ fn main() {
         T: Chars,
     }
 
-    if S.len().abs_diff(T.len()) > 1 {
-        println!("No");
-        return;
-    }
-
-    let mut cnt_diff = 0;
-    let mut pos_s = 0;
-    // change
     if S.len() == T.len() {
-        for &t in T.iter() {
-            if S[pos_s] != t {
+        // change
+        let mut cnt_diff = 0;
+        for (s, t) in S.iter().zip(T.iter()) {
+            if s != t {
                 cnt_diff += 1;
             }
-            pos_s += 1;
         }
+
         if cnt_diff <= 1 {
             println!("Yes");
             return;
         }
-    }
+    } else if S.len() < T.len() {
+        // insert s
+        let mut cnt_diff = 0;
+        let mut pos = 0;
 
-    // insert
-    cnt_diff = 0;
-    pos_s = 0;
-    if S.len() < T.len() {
         for &t in T.iter() {
-            if pos_s >= S.len() {
-                break;
+            if pos >= S.len() {
+                cnt_diff += 1;
+                continue;
             }
-            if S[pos_s] != t {
+            if t != S[pos] {
                 cnt_diff += 1;
             } else {
-                pos_s += 1;
+                pos += 1;
             }
         }
+
         if cnt_diff <= 1 {
             println!("Yes");
             return;
         }
-    }
+    } else {
+        // insert t
+        let mut cnt_diff = 0;
+        let mut pos = 0;
 
-    // elase
-    cnt_diff = 0;
-    pos_s = 0;
-    if S.len() > T.len() {
-        for &t in T.iter() {
-            if S[pos_s] != t {
+        for &s in S.iter() {
+            if pos >= T.len() {
                 cnt_diff += 1;
+                continue;
             }
-            pos_s += 1;
+
+            if s != T[pos] {
+                cnt_diff += 1;
+            } else {
+                pos += 1;
+            }
         }
-        if cnt_diff + pos_s - S.len() <= 1 {
+
+        if cnt_diff <= 1 {
             println!("Yes");
             return;
         }
