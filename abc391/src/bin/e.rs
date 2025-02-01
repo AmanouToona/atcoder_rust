@@ -31,9 +31,7 @@ impl Solve {
         };
 
         let mut ans = 0;
-        let v = 1 - u;
-        let mut cos = costs[v].clone();
-        cos.sort();
+        let mut cos = costs[u].clone();
 
         if cos.len() == 3 {
             ans = cos[0] + cos[1];
@@ -52,11 +50,16 @@ fn main() {
         A: Chars,
     }
 
-    let a: Vec<usize> = A.iter().clone().map(|&x| x as usize).collect();
-    println!("{:?}", a);
+    let a: Vec<usize> = A
+        .iter()
+        .clone()
+        .map(|&x| x as usize - '0' as usize)
+        .collect();
 
     let mut sol = Solve::new(N, a);
 
-    let (_, ans) = sol.dfs(0, 3_i32.pow(N.try_into().unwrap()) as usize);
+    let len = 3_i32.pow(N.try_into().unwrap()) as usize;
+
+    let (_, ans) = sol.dfs(0, len);
     println!("{ans}");
 }
