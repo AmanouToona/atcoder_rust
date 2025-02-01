@@ -21,6 +21,11 @@ fn main() {
     }
 
     // T の方が長い
+    if T.len() - S.len() > 1 {
+        println!("No");
+        return;
+    }
+
     let mut max_l = 0;
     for &s in S.iter() {
         if T[max_l] != s {
