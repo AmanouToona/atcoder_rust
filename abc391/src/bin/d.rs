@@ -10,23 +10,22 @@ fn main() {
         ta: [(usize, usize); Q],
     }
 
-    let xy: Vec<(usize, usize)> = xy
+    let xy: Vec<(usize, usize, usize)> = xy
         .into_iter()
-        .map(|(x, y)| (x - 1, y))
+        .enumerate()
+        .map(|(i, (x, y))| (x - 1, y, i))
         .sorted_by_key(|x| x.1)
         .collect();
 
     // 初期配置を作成
     let mut wait = vec![VecDeque::new(); W];
-
-    for (i, &(x, y)) in xy.iter().enumerate() {
+    for &(x, y, i) in xy.iter() {
         wait[x].push_back((y, i));
     }
 
     let mut del_time = vec![usize::MAX; N];
-    let mut u_time: usize = !0;
     'outer: loop {
-        let mut nxt_time = u_time.wrapping_add(1);
+        let mut nxt_time = 0;
 
         let mut que = VecDeque::new();
         for w in 0..W {
@@ -42,8 +41,8 @@ fn main() {
         while let Some(u) = que.pop_front() {
             del_time[u] = nxt_time;
         }
-        u_time = nxt_time;
     }
+    eprintln!("{:?}", del_time);
 
     for &(t, a) in ta.iter() {
         if del_time[a - 1] > t {
