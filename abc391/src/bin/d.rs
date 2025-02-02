@@ -1,25 +1,32 @@
+use itertools::Itertools;
 use proconio::input;
 use std::collections::VecDeque;
 #[allow(non_snake_case)]
 fn main() {
     input! {
         (N, W): (usize, usize),
-        mut xy: [(usize, usize); N],
+        xy: [(usize, usize); N],
         Q: usize,
         ta: [(usize, usize); Q],
     }
 
+    let xy: Vec<(usize, usize)> = xy
+        .into_iter()
+        .map(|(x, y)| (x - 1, y))
+        .sorted_by_key(|x| x.1)
+        .collect();
+
     // 初期配置を作成
     let mut wait = vec![VecDeque::new(); W];
-    xy.sort_by_key(|x| x.1);
 
     for (i, &(x, y)) in xy.iter().enumerate() {
-        wait[x - 1].push_back((y - 1, i));
+        wait[x].push_back((y, i));
     }
 
     let mut del_time = vec![usize::MAX; N];
+    let mut u_time: usize = !0;
     'outer: loop {
-        let mut nxt_time = 0;
+        let mut nxt_time = u_time.wrapping_add(1);
 
         let mut que = VecDeque::new();
         for w in 0..W {
@@ -33,11 +40,10 @@ fn main() {
         }
 
         while let Some(u) = que.pop_front() {
-            del_time[u] = nxt_time + 1;
+            del_time[u] = nxt_time;
         }
+        u_time = nxt_time;
     }
-
-    eprintln!("{:?}", del_time);
 
     for &(t, a) in ta.iter() {
         if del_time[a - 1] > t {
