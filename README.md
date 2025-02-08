@@ -1,5 +1,10 @@
 # rust 提出
 
+## proconio
+
+インタラクティブ問題は `use proconio::input_interactive;` 
+として `input_interactive!((N, L, R): (usize, usize, usize));` のように受ける
+
 ## 言語機能関連メモ
 
 ## Vec
