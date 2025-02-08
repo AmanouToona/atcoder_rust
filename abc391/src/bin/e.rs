@@ -17,7 +17,7 @@ impl Solve {
             return (self.a[left], 1);
         }
 
-        let mut len = right - left;
+        let len = right - left;
         let mut costs = vec![Vec::new(); 2];
         for i in 0..3 {
             let (u, c) = self.dfs(left + len / 3 * i, left + len / 3 * (i + 1));
@@ -30,14 +30,14 @@ impl Solve {
             1
         };
 
-        let mut ans = 0;
         let mut cos = costs[u].clone();
+        cos.sort();
 
-        if cos.len() == 3 {
-            ans = cos[0] + cos[1];
+        let ans = if cos.len() == 3 {
+            cos[0] + cos[1]
         } else {
-            ans = cos[0];
-        }
+            cos[0]
+        };
 
         (u, ans)
     }
@@ -56,7 +56,7 @@ fn main() {
         .map(|&x| x as usize - '0' as usize)
         .collect();
 
-    let mut sol = Solve::new(N, a);
+    let sol = Solve::new(N, a);
 
     let len = 3_i32.pow(N.try_into().unwrap()) as usize;
 
