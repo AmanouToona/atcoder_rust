@@ -3,35 +3,29 @@ use proconio::input;
 fn main() {
     input! {
         N: usize,
-        H: [usize; N],
-    }
-    // dp[pos][width] = cnt
-    let mut dp = vec![vec![0; N]; N];
-
-    for i in 0..N {
-        dp[i][0] = 1;
+        uv: [(usize, usize); N - 1],
     }
 
-    // 幅
-    for w in 1..N {
-        // 開始位置
-        for u in 0..N {
-            let v = u + w;
-            if v >= N {
-                break;
-            }
+    let uv: Vec<(usize, usize)> = uv.into_iter().map(|(u, v)| (u - 1, v - 1)).collect();
 
-            dp[v][w] = dp[u][w] + 1;
+    let mut g = vec![Vec::new(); N];
+
+    for &(u, v) in uv.iter() {
+        g[u].push(v);
+        g[v].push(u);
+    }
+
+    let mut ans = N;
+    for x in 0..N {
+        let mut degs = Vec::new();
+        for &y in &g[x] {
+            degs.push(g[y].len() - 1);
+        }
+        degs.sort_by(|x, &y| y.cmp(x));
+
+        for (i, &d) in degs.iter().enumerate() {
+            ans = ans.min(N - ((d + 1) * (i + 1) + 1));
         }
     }
-
-    let mut ans = 0;
-
-    for w in 0..N {
-        for u in 0..N {
-            ans = ans.max(dp[u][w]);
-        }
-    }
-
     println!("{ans}");
 }
