@@ -80,6 +80,7 @@ fn main() {
         let &(u, v) = unconnected.iter().next().unwrap();
         println!("{} {}", u + 1, v + 1);
         connected.insert((u, v));
+        unconnected.remove(&(u, v));
     } else {
         println!("Second");
     }
@@ -103,9 +104,6 @@ fn main() {
 
         let &(u, v) = unconnected.iter().next().unwrap();
         println!("{} {}", u + 1, v + 1);
+        unconnected.remove(&(u, v));
     }
-
-    // println!("{:?}", color);
-
-    // println!("{:?}", unconnected);
 }
