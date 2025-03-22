@@ -1,6 +1,15 @@
 use proconio::input_interactive;
 use std::collections::HashSet;
 use std::collections::VecDeque;
+
+fn canon(u: usize, v: usize) -> (usize, usize) {
+    if u < v {
+        (u, v)
+    } else {
+        (v, u)
+    }
+}
+
 #[allow(non_snake_case)]
 fn main() {
     input_interactive!(N: usize);
@@ -39,11 +48,7 @@ fn main() {
     let mut connected = HashSet::new();
     for u in 0..N {
         for &v in g[u].iter() {
-            if u > v {
-                connected.insert((v, u));
-            } else {
-                connected.insert((u, v));
-            }
+            connected.insert(canon(u, v));
         }
     }
 
@@ -61,26 +66,22 @@ fn main() {
     let mut unconnected = HashSet::new();
     for &u in c0.iter() {
         for &v in c1.iter() {
-            if u > v {
-                if connected.contains(&(v, u)) {
-                    continue;
-                }
-                unconnected.insert((v, u));
-            } else {
-                if connected.contains(&(u, v)) {
-                    continue;
-                }
-                unconnected.insert((u, v));
+            let edge = canon(u, v);
+            if !connected.contains(&edge) {
+                unconnected.insert(edge);
             }
         }
     }
 
-    if unconnected.len() % 2 == 1 {
-        println!("First");
+    fn play_remove(unconnected: &mut HashSet<(usize, usize)>) {
         let &(u, v) = unconnected.iter().next().unwrap();
         println!("{} {}", u + 1, v + 1);
-        connected.insert((u, v));
         unconnected.remove(&(u, v));
+    }
+
+    if unconnected.len() % 2 == 1 {
+        println!("First");
+        play_remove(&mut unconnected);
     } else {
         println!("Second");
     }
@@ -94,16 +95,9 @@ fn main() {
         let u: usize = (u - 1).try_into().unwrap();
         let v: usize = (v - 1).try_into().unwrap();
 
-        if u > v {
-            unconnected.remove(&(v, u));
-            connected.insert((v, u));
-        } else {
-            unconnected.remove(&(u, v));
-            connected.insert((u, v));
-        }
+        let edge = canon(u, v);
+        unconnected.remove(&edge);
 
-        let &(u, v) = unconnected.iter().next().unwrap();
-        println!("{} {}", u + 1, v + 1);
-        unconnected.remove(&(u, v));
+        play_remove(&mut unconnected);
     }
 }
