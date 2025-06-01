@@ -1,3 +1,5 @@
+use std::i64;
+
 use proconio::input;
 use proconio::marker::Chars;
 #[allow(non_snake_case)]
@@ -12,34 +14,38 @@ fn main() {
             S: Chars,
         }
 
-        let mut runl = vec![(S[0], 0)];
-        for &s in S.iter() {
-            let len = runl.len();
-            if s == runl[len - 1].0 {
-                runl[len - 1].1 += 1;
+        let mut A = vec![0; N + 1]; // [0, i) を 1 にするのにかかるコスト
+        let mut B = vec![0; N + 1]; // [0, i) を 0 にするのにかかるコスト
+        for (i, &s) in S.iter().enumerate() {
+            if s == '0' {
+                A[i + 1] += 1;
             } else {
-                runl.push((s, 1));
+                B[i + 1] += 1;
             }
         }
 
-        let mut zero = vec![0; runl.len() + 1];
-        let mut one = vec![0; runl.len() + 1];
-
-        for (i, &(s, n)) in runl.iter().enumerate() {
-            if s == '1' {
-                zero[i + 1] = n;
-            } else {
-                one[i + 1] = n;
-            }
+        for i in 0..N {
+            A[i + 1] += A[i];
+            B[i + 1] += B[i];
         }
 
-        for i in 0..runl.len() {
-            zero[i + 1] += zero[i];
-            one[i + 1] += one[i];
+        let mut C = Vec::new();
+        for (a, b) in A.iter().zip(B.iter()) {
+            C.push(*a - *b);
         }
 
-        println!("{:?}", runl);
-        println!("{:?}", zero);
-        println!("{:?}", one);
+        // println!("{:?}", A);
+        // println!("{:?}", B);
+        // println!("{:?}", C);
+
+        let mut ans = i64::MAX;
+        let mut max_c = 0;
+        for c in C.iter() {
+            max_c = max_c.max(*c);
+
+            let tmp = c - max_c + B[N];
+            ans = ans.min(tmp);
+        }
+        println!("{ans}");
     }
 }
