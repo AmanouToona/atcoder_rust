@@ -9,35 +9,45 @@ fn main() {
             (N, K): (usize, usize)
         }
 
-        // dp[桁][popcount][is smaller]
-        let mut dp = vec![vec![vec![Mint::new(0); 2]; 70]; 70];
-        for bit in 0..=60 {
-            dp[bit][0][1] = Mint::new(1);
-        }
+        // bit dp
+        // dp[i: 下からの桁数][j: smaller][k: popcount][l: 0-bit count, 1-sum] = l=0 -> 何通りか?  l=1 -> 総和
+        let mut dp = vec![vec![vec![vec![Mint::new(0); 2]; K + 1]; 2]; 62];
+        dp[61][0][0][0] = Mint::new(1);
 
-        // N を桁の小さい方から走査する
-        for digit in 0..=10 {
-            // dp を更新する
-            for bit in 0..=digit {
-                for cnt in (1..=60).rev() {
-                    let pre = dp[bit].clone();
-                    if (N >> digit) & 1 == 1 {
-                        dp[bit][cnt][0] += pre[cnt - 1][0];
-                        dp[bit][cnt][1] += pre[cnt - 1][1] + pre[cnt][0];
-                    } else {
-                        dp[bit][cnt][1] += pre[cnt - 1][1];
+        // 上の桁から 桁 dp を実行する
+        // 配る dp
+        for i in (1..=61).rev() {
+            for j in 0..2 {
+                for k in 0..=K {
+                    let now0 = dp[i][j][k][0];
+                    if now0 == Mint::new(0) {
+                        continue;
+                    }
+
+                    let nxt_i = i - 1;
+
+                    // a で遷移する
+                    for a in 0..=1 {
+                        let mut nxt_j = j;
+                        if a > (N >> nxt_i & 1) && j == 0 {
+                            continue;
+                        }
+
+                        if a < (N >> nxt_i & 1) {
+                            nxt_j = 1
+                        };
+
+                        let nxt_k = k + a;
+                        if nxt_k > K {
+                            continue;
+                        }
+
+                        dp[nxt_i][nxt_j][nxt_k][0] += now0;
                     }
                 }
             }
         }
-
-        let mut ans = Mint::new(0);
-        for bit in 0..=60 {
-            for cnt in 0..=60 {
-                ans += Mint::new(1i64 >> cnt) * dp[bit][cnt][1];
-            }
-        }
-
-        println!("{ans}");
+        println!("{}", dp[0][1][K][0]);
+        println!("{}", dp[0][0][K][0]);
     }
 }
