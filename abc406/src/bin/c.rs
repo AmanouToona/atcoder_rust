@@ -6,43 +6,34 @@ fn main() {
         P: [usize; N],
     }
 
-    let mut ans = 0;
-    let mut top = 0;
-    let mut bottom = 0;
-    let mut right = 1;
-    for left in 1..N - 1 {
-        if P[left - 1] < P[left] && P[left] > P[left + 1] {
-            top -= 1;
-        } else if P[left - 1] > P[left] && P[left] < P[left + 1] {
-            bottom -= 1;
-        }
+    let up_down: Vec<i32> = P
+        .windows(2)
+        .map(|x| if x[0] < x[1] { 1 } else { -1 })
+        .collect();
 
-        while right + 1 < N {
-            right += 1;
-
-            if P[right - 2] < P[right - 1] && P[right - 1] > P[right] {
-                top += 1;
-            } else if P[right - 2] > P[right - 1] && P[right - 1] < P[right] {
-                bottom -= 1;
-            }
-
-            if top == 1 && right == 1 && P[left - 1] < P[left] {
-                ans += 1;
-            }
-
-            if bottom > 1 || top > 1 {
-                break;
+    // run length
+    let mut run = vec![];
+    for &i in up_down.iter() {
+        if let Some((j, ref mut count)) = run.last_mut() {
+            if i == *j {
+                *count += 1;
+                continue;
             }
         }
 
-        if right == left {
-            if P[right - 2] < P[right - 1] && P[right - 1] > P[right] {
-                top += 1;
-            } else if P[right - 2] > P[right - 1] && P[right - 1] < P[right] {
-                bottom -= 1;
-            }
-            right += 1;
+        run.push((i, 1));
+    }
+
+    let mut up_cnt = Vec::new();
+    for (sig, cnt) in run.iter() {
+        if sig == &1 {
+            up_cnt.push(*cnt);
         }
     }
+    let mut ans = 0usize;
+    for i in up_cnt.windows(2) {
+        ans += i[0] * i[1];
+    }
+
     println!("{ans}");
 }
