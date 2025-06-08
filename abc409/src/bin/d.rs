@@ -13,42 +13,27 @@ fn main() {
         }
 
         let mut l = N;
-        let mut r = N;
-        let mut p = '=';
 
         for i in 0..N - 1 {
             if S[i] > S[i + 1] {
                 l = i;
-                p = S[i];
-                while l > 0 && S[l - 1] == S[i] {
-                    l -= 1;
-                }
                 break;
             }
         }
 
-        for i in l..N {
-            if S[i] > p {
-                r = i;
-                break;
-            }
+        if l == N {
+            println!("{}", S.iter().collect::<String>());
+            continue;
         }
 
-        let mut ans = vec!['?'; N];
-        for i in 0..N {
-            if i >= l && i < r {
-                if i != r - 1 {
-                    ans[i] = S[i + 1];
-                } else {
-                    ans[i] = p;
-                }
-            } else {
-                ans[i] = S[i];
-            }
-        }
+        let r = (l..N).find(|&i| S[i] > S[l]).unwrap_or(N);
 
-        let ans = ans.iter().collect::<String>();
+        let ans: String = S[0..l]
+            .iter()
+            .chain(S[l + 1..r].iter())
+            .chain(S[l..l + 1].iter())
+            .chain(S[r..].iter())
+            .collect();
         println!("{}", ans);
-        // println!("{} {} {}", l, r, p);
     }
 }
