@@ -23,9 +23,7 @@ fn main() {
         *cnt.entry(pos).or_insert(0) += 1;
     }
 
-    // println!("{:?}", cnt);
-
-    let mut ans: i64 = 0;
+    let mut ans: usize = 0;
     for s in 0..L / 3 {
         let &a = cnt.get(&s).unwrap_or(&0);
         let &b = cnt.get(&(s + L / 3)).unwrap_or(&0);
